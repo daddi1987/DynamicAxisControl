@@ -14,7 +14,7 @@ class ProfileGenerator:
     best_t_dec = None
     best_t_const = None
 
-    def __init__(self,M1_Acc_Dec, M1_MaxSpeed, M2_Acc_Dec, M2_MaxSpeed,mm_per_revolution,FactorGroup, percentage_constant_speed=0.25, modetype="XY Core Frame", acc_min=0.5, vel_min =0.1,acc_max = 2.0,vel_max = 0.5,StrokeThreshold = 100):
+    def __init__(self,M1_Acc_Dec, M1_MaxSpeed, M2_Acc_Dec, M2_MaxSpeed,mm_per_revolution,FactorGroup, percentage_constant_speed=0.25, modetype="XY Core Frame", acc_min=0.00001, vel_min =0.00001,acc_max = 5.0,vel_max = 1.5,StrokeThreshold = 100):
 
         """
         Inizializza i parametri per la generazione del profilo di movimento.
@@ -486,7 +486,7 @@ class ProfileGenerator:
             # Mostra entrambi i grafici
             plt.tight_layout()
             plt.show()
-        return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis
+        return  round(Rev_MaxSpeedXAxis, 4), round(Rev_AccAxisX, 4), round(Rev_MaxSpeedYAxis, 4), round(Rev_AccAxisY, 4), PositionXAxis, PositionYAxis
 
     def LinearMotion (self, Xstart,Ystart, X, Y, Graph=True):
         # ------------------------GENERATORE DI TRAIETTORIA, GENERA ENTRAMBE LE TRAIETTORIE DEI MOTORI----------------------------------
@@ -827,12 +827,12 @@ class ProfileGenerator:
             TryReduction = 0
             print("Primo Tentativo di iterazione per arrivare al termine della traiettoria nel tempo prestabilito.")
             while ((total_time_generated > total_time_trajectory) and (TryReduction < 20)):
-                max_speed -= 0.01  # Riduciamo leggermente la velocità massima
+                max_speed -= 0.0001  # Riduciamo leggermente la velocità massima
                 acc_dec = max_speed / time_acc_X_axis
                 total_time_generated = (2 * time_acc_X_axis) + (stroke_axis / max_speed)
                 TryReduction += 1
 
-            if TryReduction == 20:
+            if TryReduction == 2000:
                 print(
                     "iterazioni terminate senza trovare una traiettoria adeguata, sidovrebbe rallentare l'asse principale. Parametri più vicini inseriti")
                 acc_dec = self.acc_min
@@ -971,8 +971,8 @@ class ProfileGenerator:
 if __name__ == "__main__":
     # Parametri di esempio
     generator = ProfileGenerator(2.0,0.5,2.0,0.5,38,1000)
-    VelX,AccX,VelY,AccY,TjX,TjY = generator.SyncCoreXYAxis(0,0,200,120, Graph=True)
-    #VelX, AccX, VelY, AccY, TjX, TjY = generator.SyncLinearAxes(0, 0, 200, 10, Graph=True)
+    #VelX,AccX,VelY,AccY,TjX,TjY = generator.SyncCoreXYAxis(0,0,300,300, Graph=True)
+    VelX, AccX, VelY, AccY, TjX, TjY = generator.SyncLinearAxes(0, 0, 360.234, 560.0, Graph=True)
     #VelX, AccX, VelY, AccY, TjX, TjY = generator.LinearMotion(0, 0, 100, 200, Graph=True)
     generator.TrajectorySimulator2D(TjX,TjY)
     print("Speed X Axis: ", VelX)
@@ -980,3 +980,7 @@ if __name__ == "__main__":
     print("Speed Y Axis: ", VelY)
     print("Acc/Dec Y Axis: ", AccY)
 
+    # 1 Da risolvere il problema della diagonale perfetta su Core XY, non dovendo muoversi un asse va in errore una divisione per 0 
+    # File "c:\Users\david\Documents\GitHub\Dynamic-Axis-Control\DynamicAxisControl.py", line 847, in SingleTrajectoryGenerator
+
+    # 2 Da risolvere su generator.LinearMotion(0, 0, 100, 200, Graph=True) l'esclusione dei valori da interpolare
