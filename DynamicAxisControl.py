@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from matplotlib.widgets import Cursor
 from matplotlib.animation import FuncAnimation
+from matplotlib.gridspec import GridSpec
 
 
 class ProfileGenerator:
@@ -196,6 +197,7 @@ class ProfileGenerator:
         if Graph == True:
             # Creazione della figura con due riquadri (subplots)
             fig, axs = plt.subplots(2, 2, figsize=(12, 10))
+            gs = GridSpec(3, 2, figure=fig)  # 3 righe x 2 colonne
 
             # Grafico 1: Profilo di velocità
             axs[0, 0].plot(M1_TrajectoryTime, X_Trajectory, label="Velocità Asse X (mm/s)", color="blue")
@@ -237,33 +239,48 @@ class ProfileGenerator:
             # axs[1,0].set_xlim(-460, 460)  # Limite massimo dell'asse X
             # axs[1,0].set_ylim(-600, 600)  # Limite massimo dell'asse Y
 
-            axs[1, 1].axis('off')  # Disattiva il grafico in basso a destra
-            fig.text(0.60, 0.05,
-                     (f'-                   Dinamiche Utilizzate:\n'
-                      f'- \n'
-                      f'- Speed Max Axis X (demand): {self.M1_MaxSpeed} mm/s\n'
-                      f'- Max Acceleration Axis X(demand): {self.M1_Acc_Dec} mm/s²\n'
-                      f'- Speed Max Axis Y(demand): {self.M2_MaxSpeed} mm/s\n'
-                      f'- Max Acceleration Axis Y(demand): {self.M2_Acc_Dec} mm/s²\n'
-                      f'- Time Trajectory Axis X: {round(M1_TrajectoryTotalTime, 3)} s\n'
-                      f'- Time Trajectory Axis Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
-                      f'- Corsa Asse X: {X} mm\n'
-                      f'- Corsa Asse Y: {Y} mm\n'
-                      f'- Asse Ricalcolato:  {AxisRecalculate} \n'
-                      f'- \n'
-                      f'- Speed Max Axis X: {round(MaxSpeedXAxis, 2)} mm/s\n'
-                      f'- Max Acceleration Axis X: {round(AccAxisX, 2)} mm/s²\n'
-                      f'- Speed Max Axis Y: {round(MaxSpeedYAxis, 3)} mm/s\n'
-                      f'- Max Acceleration Axis Y: {round(AccAxisY, 3)} mm/s²\n'
-                      f'- Time Accelerazione Asse X: {round(M1_AccTime, 3)} s\n'
-                      f'- Time Accelerazione Asse Y: {round(M2_AccTime, 3)} s\n'
-                      f'- \n'
-                      f'- Speed Max Axis X : {round(Rev_MaxSpeedXAxis, 2)} (rev/s)\n'
-                      f'- Max Acceleration Axis X: {round(Rev_AccAxisX, 2)} (rev/s²)\n'
-                      f'- Speed Max Axis Y : {round(Rev_MaxSpeedYAxis, 3)} (rev/s)\n'
-                      f'- Max Acceleration Axis Y : {round(Rev_AccAxisY, 3)} (rev/s²)\n'
-                      f'- \n'),
-                     fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
+            axs[1, 1].axis('off')
+            gs_bottom_right = gs[2, 1].subgridspec(2, 1, height_ratios=[1, 1])
+
+            # Sotto-riquadro 1: Informazioni Parte 1
+            ax4_1 = fig.add_subplot(gs_bottom_right[0, 0])
+            ax4_1.axis('off')
+
+            ax4_1.text(0, 0.0,
+                    (   f'                                 DINAMICHE UTILIZZATE:    \n\n'
+                        f'- Speed Max Axis X (demand): {self.M1_MaxSpeed} mm/s\n'
+                        f'- Max Acceleration Axis X(demand): {self.M1_Acc_Dec} mm/s²\n'
+                        f'- Speed Max Axis Y(demand): {self.M2_MaxSpeed} mm/s\n'
+                        f'- Max Acceleration Axis Y(demand): {self.M2_Acc_Dec} mm/s²\n'
+                        f'- Time Trajectory Axis X: {round(M1_TrajectoryTotalTime, 3)} s\n'
+                        f'- Time Trajectory Axis Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
+                        f'- Corsa Asse X: {X} mm\n'
+                        f'- Corsa Asse Y: {Y} mm\n'
+                        f'- Asse Ricalcolato:  {AxisRecalculate}\n'
+                        f'- \n'),
+                    fontsize=8, color='black')
+
+            # Sotto-riquadro 2: Informazioni Parte 2
+            ax4_2 = fig.add_subplot(gs_bottom_right[0, 0])
+            ax4_2.axis('off')
+
+            ax4_2.text(0.5, -0.3,
+                    (f' '
+                        f' \n'
+                        f' \n'
+                        f'- Speed Max Axis X : {round(MaxSpeedXAxis, 2)} mm/s\n'
+                        f'- Max Acceleration Axis X: {round(AccAxisX, 2)} mm/s²\n'
+                        f'- Speed Max Axis Y : {round(MaxSpeedYAxis, 3)} mm/s\n'
+                        f'- Max Acceleration Axis Y : {round(AccAxisY, 3)} mm/s²\n'
+                        f'- Time Accelerazione Asse X: {round(M1_AccTime, 3)} s\n'
+                        f'- Time Accelerazione Asse Y: {round(M2_AccTime, 3)} s\n'
+                        f'- \n'
+                        f'- Speed Max Axis X : {round(Rev_MaxSpeedXAxis, 2)} (rev/s)\n'
+                        f'- Max Acceleration Axis X: {round(Rev_AccAxisX, 2)} (rev/s²)\n'
+                        f'- Speed Max Axis Y : {round(Rev_MaxSpeedYAxis, 3)} (rev/s)\n'
+                        f'- Max Acceleration Axis Y : {round(Rev_AccAxisY, 3)} (rev/s²)\n'
+                        f'- \n'),
+                    fontsize=8, color='black')
 
             cursor = Cursor(axs[1, 0], useblit=True, color='red', linewidth=1)
             axs[1, 0].legend()
@@ -410,6 +427,7 @@ class ProfileGenerator:
         if Graph == True:
             # Creazione della figura con due riquadri (subplots)
             fig, axs = plt.subplots(2, 2, figsize=(12, 10))
+            gs = GridSpec(3, 2, figure=fig)  # 3 righe x 2 colonne
 
             # Grafico 1: Profilo di velocità
             axs[0, 0].plot(M1_TrajectoryTime, X_Trajectory, label="Velocità Asse X (mm/s)", color="blue")
@@ -451,33 +469,48 @@ class ProfileGenerator:
             # axs[1,0].set_xlim(-460, 460)  # Limite massimo dell'asse X
             # axs[1,0].set_ylim(-600, 600)  # Limite massimo dell'asse Y
 
-            axs[1, 1].axis('off')  # Disattiva il grafico in basso a destra
-            fig.text(0.60, 0.05,
-                     (f'-                   Dinamiche Utilizzate:\n'
-                      f'- \n'
-                      f'- Speed Max Axis X (demand): {self.M1_MaxSpeed} mm/s\n'
-                      f'- Max Acceleration Axis X(demand): {self.M1_Acc_Dec} mm/s²\n'
-                      f'- Speed Max Axis Y(demand): {self.M2_MaxSpeed} mm/s\n'
-                      f'- Max Acceleration Axis Y(demand): {self.M2_Acc_Dec} mm/s²\n'
-                      f'- Time Trajectory Axis X: {round(M1_TrajectoryTotalTime, 3)} s\n'
-                      f'- Time Trajectory Axis Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
-                      f'- Corsa Asse X: {X} mm\n'
-                      f'- Corsa Asse Y: {Y} mm\n'
-                      f'- Asse Ricalcolato:  {AxisRecalculate} \n'
-                      f'- \n'
-                      f'- Speed Max Axis X: {round(MaxSpeedXAxis, 2)} mm/s\n'
-                      f'- Max Acceleration Axis X: {round(AccAxisX, 2)} mm/s²\n'
-                      f'- Speed Max Axis Y: {round(MaxSpeedYAxis, 3)} mm/s\n'
-                      f'- Max Acceleration Axis Y: {round(AccAxisY, 3)} mm/s²\n'
-                      f'- Time Accelerazione Asse X: {round(M1_AccTime, 3)} s\n'
-                      f'- Time Accelerazione Asse Y: {round(M2_AccTime, 3)} s\n'
-                      f'- \n'
-                      f'- Speed Max Axis X : {round(Rev_MaxSpeedXAxis, 2)} (rev/s)\n'
-                      f'- Max Acceleration Axis X: {round(Rev_AccAxisX, 2)} (rev/s²)\n'
-                      f'- Speed Max Axis Y : {round(Rev_MaxSpeedYAxis, 3)} (rev/s)\n'
-                      f'- Max Acceleration Axis Y : {round(Rev_AccAxisY, 3)} (rev/s²)\n'
-                      f'- \n'),
-                     fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
+            axs[1, 1].axis('off')
+            gs_bottom_right = gs[2, 1].subgridspec(2, 1, height_ratios=[1, 1])
+
+            # Sotto-riquadro 1: Informazioni Parte 1
+            ax4_1 = fig.add_subplot(gs_bottom_right[0, 0])
+            ax4_1.axis('off')
+
+            ax4_1.text(0, 0.0,
+                    (   f'                                 DINAMICHE UTILIZZATE:    \n\n'
+                        f'- Speed Max Axis X (demand): {self.M1_MaxSpeed} mm/s\n'
+                        f'- Max Acceleration Axis X(demand): {self.M1_Acc_Dec} mm/s²\n'
+                        f'- Speed Max Axis Y(demand): {self.M2_MaxSpeed} mm/s\n'
+                        f'- Max Acceleration Axis Y(demand): {self.M2_Acc_Dec} mm/s²\n'
+                        f'- Time Trajectory Axis X: {round(M1_TrajectoryTotalTime, 3)} s\n'
+                        f'- Time Trajectory Axis Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
+                        f'- Corsa Asse X: {X} mm\n'
+                        f'- Corsa Asse Y: {Y} mm\n'
+                        f'- Asse Ricalcolato:  {AxisRecalculate}\n'
+                        f'- \n'),
+                    fontsize=8, color='black')
+
+            # Sotto-riquadro 2: Informazioni Parte 2
+            ax4_2 = fig.add_subplot(gs_bottom_right[0, 0])
+            ax4_2.axis('off')
+
+            ax4_2.text(0.5, -0.3,
+                    (f' '
+                        f' \n'
+                        f' \n'
+                        f'- Speed Max Axis X : {round(MaxSpeedXAxis, 2)} mm/s\n'
+                        f'- Max Acceleration Axis X: {round(AccAxisX, 2)} mm/s²\n'
+                        f'- Speed Max Axis Y : {round(MaxSpeedYAxis, 3)} mm/s\n'
+                        f'- Max Acceleration Axis Y : {round(AccAxisY, 3)} mm/s²\n'
+                        f'- Time Accelerazione Asse X: {round(M1_AccTime, 3)} s\n'
+                        f'- Time Accelerazione Asse Y: {round(M2_AccTime, 3)} s\n'
+                        f'- \n'
+                        f'- Speed Max Axis X : {round(Rev_MaxSpeedXAxis, 2)} (rev/s)\n'
+                        f'- Max Acceleration Axis X: {round(Rev_AccAxisX, 2)} (rev/s²)\n'
+                        f'- Speed Max Axis Y : {round(Rev_MaxSpeedYAxis, 3)} (rev/s)\n'
+                        f'- Max Acceleration Axis Y : {round(Rev_AccAxisY, 3)} (rev/s²)\n'
+                        f'- \n'),
+                    fontsize=8, color='black')
 
             cursor = Cursor(axs[1, 0], useblit=True, color='red', linewidth=1)
             axs[1, 0].legend()
@@ -617,6 +650,7 @@ class ProfileGenerator:
         if Graph == True:
             # Creazione della figura con due riquadri (subplots)
             fig, axs = plt.subplots(2, 2, figsize=(12, 10))
+            gs = GridSpec(3, 2, figure=fig)  # 3 righe x 2 colonne
 
             # Grafico 1: Profilo di velocità
             axs[0, 0].plot(M1_TrajectoryTime, X_Trajectory, label="Velocità Asse X (mm/s)", color="blue")
@@ -658,28 +692,43 @@ class ProfileGenerator:
             # axs[1,0].set_xlim(-460, 460)  # Limite massimo dell'asse X
             # axs[1,0].set_ylim(-600, 600)  # Limite massimo dell'asse Y
 
-            axs[1, 1].axis('off')  # Disattiva il grafico in basso a destra
-            fig.text(0.60, 0.05,
-                     (f'-                   Dinamiche Utilizzate:\n'
-                      f'- \n'
-                      f'- Speed Max Axis X (demand): {self.M1_MaxSpeed} mm/s\n'
-                      f'- Max Acceleration Axis X(demand): {self.M1_Acc_Dec} mm/s²\n'
-                      f'- Speed Max Axis Y(demand): {self.M2_MaxSpeed} mm/s\n'
-                      f'- Max Acceleration Axis Y(demand): {self.M2_Acc_Dec} mm/s²\n'
-                      f'- Time Trajectory Axis X: {round(M1_TrajectoryTotalTime, 3)} s\n'
-                      f'- Time Trajectory Axis Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
-                      f'- Corsa Asse X: {X} mm\n'
-                      f'- Corsa Asse Y: {Y} mm\n'
-                      f'- Asse Ricalcolato:  {AxisRecalculate} \n'
-                      f'- \n'
-                      f'- Speed Max Axis X: {round(MaxSpeedXAxis, 2)} mm/s\n'
-                      f'- Max Acceleration Axis X: {round(AccAxisX, 2)} mm/s²\n'
-                      f'- Speed Max Axis Y: {round(MaxSpeedYAxis, 3)} mm/s\n'
-                      f'- Max Acceleration Axis Y: {round(AccAxisY, 3)} mm/s²\n'
-                      f'- Time Accelerazione Asse X: {round(M1_AccTime, 3)} s\n'
-                      f'- Time Accelerazione Asse Y: {round(M2_AccTime, 3)} s\n'
-                      f'- \n'),
-                     fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
+            axs[1, 1].axis('off')
+            gs_bottom_right = gs[2, 1].subgridspec(2, 1, height_ratios=[1, 1])
+
+            # Sotto-riquadro 1: Informazioni Parte 1
+            ax4_1 = fig.add_subplot(gs_bottom_right[0, 0])
+            ax4_1.axis('off')
+
+            ax4_1.text(0, 0.0,
+                    (   f'                                 DINAMICHE UTILIZZATE:    \n\n'
+                        f'- Speed Max Axis X (demand): {self.M1_MaxSpeed} mm/s\n'
+                        f'- Max Acceleration Axis X(demand): {self.M1_Acc_Dec} mm/s²\n'
+                        f'- Speed Max Axis Y(demand): {self.M2_MaxSpeed} mm/s\n'
+                        f'- Max Acceleration Axis Y(demand): {self.M2_Acc_Dec} mm/s²\n'
+                        f'- Time Trajectory Axis X: {round(M1_TrajectoryTotalTime, 3)} s\n'
+                        f'- Time Trajectory Axis Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
+                        f'- Corsa Asse X: {X} mm\n'
+                        f'- Corsa Asse Y: {Y} mm\n'
+                        f'- Asse Ricalcolato:  {AxisRecalculate}\n'
+                        f'- \n'),
+                    fontsize=8, color='black')
+
+            # Sotto-riquadro 2: Informazioni Parte 2
+            ax4_2 = fig.add_subplot(gs_bottom_right[0, 0])
+            ax4_2.axis('off')
+
+            ax4_2.text(0.5, -0.3,
+                    (f' '
+                        f' \n'
+                        f' \n'
+                        f'- Speed Max Axis X : {round(MaxSpeedXAxis, 2)} mm/s\n'
+                        f'- Max Acceleration Axis X: {round(AccAxisX, 2)} mm/s²\n'
+                        f'- Speed Max Axis Y: {round(MaxSpeedYAxis, 3)} mm/s\n'
+                        f'- Max Acceleration Axis Y: {round(AccAxisY, 3)} mm/s²\n'
+                        f'- Time Accelerazione Asse X: {round(M1_AccTime, 3)} s\n'
+                        f'- Time Accelerazione Asse Y: {round(M2_AccTime, 3)} s\n'
+                        f'- \n'),
+                    fontsize=8, color='black')
 
             cursor = Cursor(axs[1, 0], useblit=True, color='red', linewidth=1)
             axs[1, 0].legend()
