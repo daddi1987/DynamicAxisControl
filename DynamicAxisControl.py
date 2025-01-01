@@ -231,8 +231,8 @@ class ProfileGenerator:
             axs[0, 1].plot(TimeAlghorytmics, SpeedAlghorytmics, label='Velocità Asse M1 (mm/s)', color=colorAxis)
             axs[0, 1].plot(TimeTraj, SpeedTraj, label='Velocità Asse M2 (mm/s)', color=colorAxis1)
             axs[0, 1].axhline(y=MaxSpeed_Flag, color='red', linestyle='--',label=f'Velocità Massima: {MaxSpeed_Flag:.2f} mm/s')                   
-            # axs[0, 1].axvline(x=acceleration_Eq, color='green', linestyle='--', label='Fine accelerazione')
-            # axs[0, 1].axvline(x=best_t_accAlgho + best_time_const, color='orange', linestyle='--', label='Fine velocità costante')
+            axs[0, 1].axvline(x=M1_AccTime, color='darkorange', linestyle='--', label='Fine accelerazione')
+            axs[0, 1].axvline(x=(max(TimeAlghorytmics) - M1_AccTime), color='darkorange', linestyle='--', label='Fine velocità costante')
             axs[0, 1].axvline(x=TimeTrajectory, color='purple', linestyle='--', label='Fine movimento')
             axs[0, 1].set_title('Profilo di Velocità e Accelerazione')
             axs[0, 1].set_xlabel('Tempo (s)')
@@ -470,8 +470,8 @@ class ProfileGenerator:
             axs[0, 1].plot(TimeTraj, SpeedTraj, label='Velocità Asse Y (mm/s)', color=colorAxis1)
             axs[0, 1].axhline(y=MaxSpeed_Flag, color='red', linestyle='--',
                               label=f'Velocità Massima: {MaxSpeed_Flag:.2f} mm/s')
-            axs[0, 1].axvline(x=acceleration_Eq, color='green', linestyle='--', label='Fine accelerazione')
-            axs[0, 1].axvline(x=best_t_accAlgho + best_time_const, color='orange', linestyle='--', label='Fine velocità costante')
+            axs[0, 1].axvline(x=M1_AccTime, color='darkorange', linestyle='--', label='Fine accelerazione')
+            axs[0, 1].axvline(x=(max(TimeAlghorytmics) - M1_AccTime), color='darkorange', linestyle='--', label='Fine velocità costante')
             axs[0, 1].axvline(x=TimeTrajectory, color='purple', linestyle='--', label='Fine movimento')
             axs[0, 1].set_title('Profilo di Velocità e Accelerazione')
             axs[0, 1].set_xlabel('Tempo (s)')
@@ -1050,8 +1050,8 @@ if __name__ == "__main__":
     YSim = [0,200,10,526,10,30,350]
     i = 1
     while i != 7:
-        #VelX,AccX,VelY,AccY,TjX,TjY = generator.SyncCoreXYAxis(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
-        VelX, AccX, VelY, AccY, TjX, TjY = generator.SyncLinearAxes(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+        VelX,AccX,VelY,AccY,TjX,TjY = generator.SyncCoreXYAxis(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+        #VelX, AccX, VelY, AccY, TjX, TjY = generator.SyncLinearAxes(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
         i=i+1
     #VelX,AccX,VelY,AccY,TjX,TjY = generator.SyncCoreXYAxis(0,0, 200, 524, Graph=True)
     #VelX, AccX, VelY, AccY, TjX, TjY = generator.SyncLinearAxes(0, 0, 360.234, 560.0, Graph=True)
