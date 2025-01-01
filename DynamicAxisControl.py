@@ -45,6 +45,9 @@ class ProfileGenerator:
         print("Generate Sync for CORE XY")
 
         M1_mm, M2_mm = self.calculate_theta(X,Y,Xstart,Ystart)   # Ricalculate real displacement in millimeter
+
+        M1_revToSend = (M1_mm / self.mm_per_revolution) * self.FactorGroup
+        M2_revToSend = (M2_mm / self.mm_per_revolution) * self.FactorGroup
         
         #Inversione del segno se necesario
         if M1_mm < 0:
@@ -307,7 +310,7 @@ class ProfileGenerator:
             # Mostra entrambi i grafici
             plt.tight_layout()
             plt.show()
-        return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis
+        return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis, M1_revToSend, M2_revToSend
 
     def SyncLinearAxes (self, Xstart, Ystart, X, Y, Graph=True):
 
@@ -1050,22 +1053,17 @@ if __name__ == "__main__":
     YSim = [0,200,10,526,10,30,350]
     i = 1
     while i != 7:
-        VelX,AccX,VelY,AccY,TjX,TjY = generator.SyncCoreXYAxis(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+        VelX,AccX,VelY,AccY,TjX,TjY,M1_position,M2_position = generator.SyncCoreXYAxis(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
         #VelX, AccX, VelY, AccY, TjX, TjY = generator.SyncLinearAxes(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
         i=i+1
+        print("Posizione Motore 1: ",M1_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
+        print("Posizione Motore 2: ",M2_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
+        print("Speed X Axis: ", VelX)
+        print("Acc/Dec X Axis: ", AccX)
+        print("Speed Y Axis: ", VelY)
+        print("Acc/Dec Y Axis: ", AccY)
     #VelX,AccX,VelY,AccY,TjX,TjY = generator.SyncCoreXYAxis(0,0, 200, 524, Graph=True)
     #VelX, AccX, VelY, AccY, TjX, TjY = generator.SyncLinearAxes(0, 0, 360.234, 560.0, Graph=True)
     #VelX, AccX, VelY, AccY, TjX, TjY = generator.LinearMotion(0, 0, 100, 200, Graph=True)
     #generator.TrajectorySimulator2D(TjX,TjY)
-    print("Speed X Axis: ", VelX)
-    print("Acc/Dec X Axis: ", AccX)
-    print("Speed Y Axis: ", VelY)
-    print("Acc/Dec Y Axis: ", AccY)
 
-    # 1 Da risolvere il problema della diagonale perfetta su Core XY, non dovendo muoversi un asse va in errore una divisione per 0 
-        #MITIGATO CON L'INSERIMENO DI UN VALORE AL MILLESIMO
-        # File "c:\Users\david\Documents\GitHub\Dynamic-Axis-Control\DynamicAxisControl.py", line 847, in SingleTrajectoryGenerator
-
-    # 2 Da risolvere su generator.LinearMotion(0, 0, 100, 200, Graph=True) l'esclusione dei valori da interpolare
-
-    # 3 Nel core XY bisogna capire quando i valori cambia di segno e esegue posizioni negative per la quale fa movimentare solo il secondo motore
