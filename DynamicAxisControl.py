@@ -4,6 +4,8 @@ from scipy.interpolate import interp1d
 from matplotlib.widgets import Cursor
 from matplotlib.animation import FuncAnimation
 from matplotlib.gridspec import GridSpec
+import matplotlib.animation as animation
+import time
 
 
 class ProfileGenerator:
@@ -310,7 +312,7 @@ class ProfileGenerator:
             # Mostra entrambi i grafici
             plt.tight_layout()
             plt.show()
-        return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis, M1_revToSend, M2_revToSend
+        return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis, TimeX, TimeY, M1_revToSend, M2_revToSend
 
     def SyncLinearAxes (self, Xstart, Ystart, X, Y, Graph=True):
 
@@ -547,9 +549,16 @@ class ProfileGenerator:
             # Mostra entrambi i grafici
             plt.tight_layout()
             plt.show()
-        return  round(Rev_MaxSpeedXAxis, 4), round(Rev_AccAxisX, 4), round(Rev_MaxSpeedYAxis, 4), round(Rev_AccAxisY, 4), PositionXAxis, PositionYAxis
+        return  round(Rev_MaxSpeedXAxis, 4), round(Rev_AccAxisX, 4), round(Rev_MaxSpeedYAxis, 4), round(Rev_AccAxisY, 4), PositionXAxis, PositionYAxis, TimeX, TimeY
 
     def LinearMotion (self, Xstart,Ystart, X, Y, Graph=True):
+
+        # Calculated displacement value and convert in absolute value
+        X = X - Xstart
+        Y = Y - Ystart
+
+        X = abs(X)
+        Y = abs(Y)
         # ------------------------GENERATORE DI TRAIETTORIA, GENERA ENTRAMBE LE TRAIETTORIE DEI MOTORI----------------------------------
 
         (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
@@ -765,7 +774,7 @@ class ProfileGenerator:
             # Mostra entrambi i grafici
             plt.tight_layout()
             plt.show()
-        return  round(MaxSpeedXAxis, 2), round(AccAxisX, 2), round(MaxSpeedYAxis, 3), round(AccAxisY, 3), PositionXAxis, PositionYAxis
+        return  round(MaxSpeedXAxis, 2), round(AccAxisX, 2), round(MaxSpeedYAxis, 3), round(AccAxisY, 3), PositionXAxis, PositionYAxis, TimeX, TimeY
 
     def calculate_theta(self, X, Y, Xstart, Ystart):
 
@@ -781,24 +790,24 @@ class ProfileGenerator:
         return M1_LinearStroke, M2_LinearStroke
 
     def TrajectoryGenerator(self, dPosition_M1, dPosition_M2, MaxSpeed_M1, MaxSpeed_M2, AccDec_M1, AccDec_M2,RevolutionMotor):
-        aPositionM1 = dPosition_M1 / 100  #Controllare perchè divisione per 100
-        aPositionM2 = dPosition_M2 / 100  #Controllare perchè divisione per 100
+        aPositionM1 = dPosition_M1 / 100  # NON UTILIZZATO  Controllare perchè divisione per 100  NON UTILIZZATO 
+        aPositionM2 = dPosition_M2 / 100  # NON UTILIZZATO Controllare perchè divisione per 100  NON UTILIZZATO 
 
         dPositionM1 = dPosition_M1
         dPositionM2 = dPosition_M2
 
-        # Conversione da rivoluzioni a mm
-        aPositionM1_mm = aPositionM1 * RevolutionMotor
-        aPositionM2_mm = aPositionM2 * RevolutionMotor
+        # Conversione da rivoluzioni a mm 
+        aPositionM1_mm = aPositionM1 * RevolutionMotor   # NON UTILIZZATO 
+        aPositionM2_mm = aPositionM2 * RevolutionMotor   # NON UTILIZZATO 
         Stroke_M1 = dPositionM1
         Stroke_M2 = dPositionM2
 
-        M1_distanceRevolution = Stroke_M1 / RevolutionMotor
-        M2_distanceRevolution = Stroke_M2 / RevolutionMotor
+        M1_distanceRevolution = Stroke_M1 / RevolutionMotor   # NON UTILIZZATO
+        M2_distanceRevolution = Stroke_M2 / RevolutionMotor   # NON UTILIZZATO  
 
         # Velocità massima in mm/s
-        MaxSpeed_M1_mm = MaxSpeed_M1 * 1000
-        MaxSpeed_M2_mm = MaxSpeed_M2 * 1000
+        MaxSpeed_M1_mm = MaxSpeed_M1 * self.FactorGroup
+        MaxSpeed_M2_mm = MaxSpeed_M2 * self.FactorGroup
         dSpeedM1_rev = MaxSpeed_M1_mm / RevolutionMotor
         dSpeedM2_rev = MaxSpeed_M2_mm / RevolutionMotor
 
@@ -807,12 +816,12 @@ class ProfileGenerator:
         StrokeTime_M2 = Stroke_M2 / MaxSpeed_M2_mm
 
         # Tempo di accelerazione per l'asse M1
-        AccDec_M1 = AccDec_M1 * 1000
+        AccDec_M1 = AccDec_M1 * self.FactorGroup
         M1_AccTime = MaxSpeed_M1_mm / AccDec_M1
         StrokeAccDec_M1 = (MaxSpeed_M1_mm ** 2) / (2 * AccDec_M1)
 
         # Tempo di accelerazione per l'asse M2
-        AccDec_M2 = AccDec_M2 * 1000
+        AccDec_M2 = AccDec_M2 * self.FactorGroup
         M2_AccTime = MaxSpeed_M2_mm / AccDec_M2
         StrokeAccDec_M2 = (MaxSpeed_M2_mm ** 2) / (2 * AccDec_M2)
 
@@ -978,15 +987,15 @@ class ProfileGenerator:
             t_const = distance_const / vel_max
 
         # Fase di accelerazione (da 0 a t_acc)
-        time_acc = np.linspace(0, t_acc, num=100)
+        time_acc = np.linspace(0, t_acc, num=1000)
         position_acc = 0.5 * acc_max * time_acc ** 2
 
         # Fase di velocità costante (da t_acc a t_acc + t_const)
-        time_const = np.linspace(t_acc, t_acc + t_const, num=100)
+        time_const = np.linspace(t_acc, t_acc + t_const, num=1000)
         position_const = position_acc[-1] + vel_max * (time_const - t_acc)
 
         # Fase di decelerazione (da t_acc + t_const a TimeTrajectory)
-        time_dec = np.linspace(t_acc + t_const, TimeTrajectory, num=100)
+        time_dec = np.linspace(t_acc + t_const, TimeTrajectory, num=1000)
         position_dec = position_const[-1] + vel_max * (time_dec - (t_acc + t_const)) - 0.5 * acc_max * (
                 time_dec - (t_acc + t_const)) ** 2
 
@@ -1038,9 +1047,75 @@ class ProfileGenerator:
         plt.grid(True)
         plt.show()
 
+    def AxisSimulator2D (self, PositionXAxis, PositionYAxis, TimeX, TimeY, speed_factor) :
+        # Simulazione dei dati di esempio
+        num_points = 3000
+
+        # Percentuale di velocità (100% = massima velocità)
+        speed_factor = speed_factor / 100
+
+        # Inizializzazione del grafico
+        fig, ax = plt.subplots()
+        ax.set_xlim(0, 450)
+        ax.set_ylim(0, 560)
+        ax.set_xlabel('Asse X (mm)')
+        ax.set_ylabel('Asse Y (mm)')
+        ax.set_title('Animazione Real-Time Assi X e Y')
+
+        # Inizializzazione dei marcatori
+        marker_x, = ax.plot([], [], 'ro', label='Asse X')
+        marker_y, = ax.plot([], [], 'bo', label='Asse Y')
+        ax.legend()
+
+        # Funzione di inizializzazione
+        def init():
+            marker_x.set_data([], [])
+            marker_y.set_data([], [])
+            return marker_x, marker_y
+        
+        cursor_x = ax.axvline(x=0, color='r', linestyle='--', lw=1)  # Linea verticale rossa tratteggiata
+        cursor_y = ax.axhline(y=0, color='b', linestyle='--', lw=1)  # Linea orizzontale blu tratteggiata
+
+        intersection_marker, = ax.plot([], [], 'go', label='Intersezione', markersize=8)
 
 
+        # Funzione di aggiornamento con sincronizzazione temporale globale
+        start_time = time.time()
+        def update(frame):
+            current_time = (time.time() - start_time) * speed_factor
 
+            if current_time > max(TimeX[-1], TimeY[-1]):
+                ani.event_source.stop()
+                return marker_x, marker_y, cursor_x, cursor_y, intersection_marker
+            
+            # Trova l'indice corrispondente al tempo attuale
+            idx_x = np.searchsorted(TimeX, current_time)
+            idx_y = np.searchsorted(TimeY, current_time)
+
+            pos_x = PositionXAxis[idx_x] if idx_x < len(PositionXAxis) else PositionXAxis[-1]
+            pos_y = PositionYAxis[idx_y] if idx_y < len(PositionYAxis) else PositionYAxis[-1]
+            
+            if idx_x < len(PositionXAxis):
+                marker_x.set_data(PositionXAxis[idx_x], 280)  # Punto fisso Y per Asse X
+                cursor_x.set_xdata(PositionXAxis[idx_x])
+            if idx_y < len(PositionYAxis):
+                marker_y.set_data(225, PositionYAxis[idx_y])  # Punto fisso X per Asse Y
+                cursor_y.set_ydata(PositionYAxis[idx_y])
+
+            intersection_marker.set_data(pos_x, pos_y)
+            
+            return marker_x, marker_y, cursor_x, cursor_y, intersection_marker
+
+        # Intervallo di aggiornamento fisso
+        interval = (1000 / num_points) / speed_factor  # Tempo in millisecondi per mantenere la velocità
+
+        # Creazione dell'animazione
+        ani = animation.FuncAnimation(
+            fig, update, init_func=init, blit=True,
+            interval=interval, frames=num_points
+        )
+
+        plt.show()
 
 
 
@@ -1051,17 +1126,21 @@ if __name__ == "__main__":
 
     XSim = [0,200,400,250,10,300,250]
     YSim = [0,200,10,526,10,30,350]
+    
     i = 1
     while i != 7:
-        VelX,AccX,VelY,AccY,TjX,TjY,M1_position,M2_position = generator.SyncCoreXYAxis(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
-        #VelX, AccX, VelY, AccY, TjX, TjY = generator.SyncLinearAxes(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+        VelX,AccX,VelY,AccY,TjX,TjY,TmX, TmY, M1_position,M2_position = generator.SyncCoreXYAxis(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+        #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+        #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.LinearMotion(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+        generator.AxisSimulator2D(TjX, TjY, TmX, TmY, 100)
         i=i+1
-        print("Posizione Motore 1: ",M1_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
-        print("Posizione Motore 2: ",M2_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
+        #print("Posizione Motore 1: ",M1_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
+        #print("Posizione Motore 2: ",M2_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
         print("Speed X Axis: ", VelX)
         print("Acc/Dec X Axis: ", AccX)
         print("Speed Y Axis: ", VelY)
         print("Acc/Dec Y Axis: ", AccY)
+        #generator.TrajectorySimulator2D(TjX,TjY)
     #VelX,AccX,VelY,AccY,TjX,TjY = generator.SyncCoreXYAxis(0,0, 200, 524, Graph=True)
     #VelX, AccX, VelY, AccY, TjX, TjY = generator.SyncLinearAxes(0, 0, 360.234, 560.0, Graph=True)
     #VelX, AccX, VelY, AccY, TjX, TjY = generator.LinearMotion(0, 0, 100, 200, Graph=True)
