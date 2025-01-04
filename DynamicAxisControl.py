@@ -297,7 +297,7 @@ class ProfileGenerator:
                     fontsize=8, color='black')
 
             # Sotto-riquadro 2: Informazioni Parte 2
-            ax4_2 = fig.add_subplot(gs_bottom_right[0, 0])
+            ax4_2 = fig.add_subplot(gs_bottom_right[1, 0])
             ax4_2.axis('off')
 
             ax4_2.text(0.5, -0.3,
@@ -323,7 +323,7 @@ class ProfileGenerator:
             plt.grid(True)
 
             # Mostra entrambi i grafici
-            plt.tight_layout()
+            #plt.tight_layout()
             plt.show()
         return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis, TimeX, TimeY, M1_revToSend, M2_revToSend
 
