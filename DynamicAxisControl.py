@@ -20,13 +20,27 @@ class ProfileGenerator:
     def __init__(self,M1_Acc_Dec, M1_MaxSpeed, M2_Acc_Dec, M2_MaxSpeed,mm_per_revolution,FactorGroup, percentage_constant_speed=0.25, modetype="XY Core Frame", acc_min=0.00001, vel_min =0.00001,acc_max = 5.0,vel_max = 1.5,StrokeThreshold = 1):
 
         """
-        Inizializza i parametri per la generazione del profilo di movimento.
+
+           Initializes the parameters for motion profile generation.
+           
+            In this section, the profile usage parameters are defined:
+
+            M1_Acc_Dec = Acceleration and deceleration of the first motor/Axis
+            M1_MaxSpeed ​​= Maximum speed of the first motor/Axis
+            M2_Acc_Dec = Acceleration and deceleration of the second motor/Axis
+            M2_MaxSpeed ​​= Maximum speed of the second motor/Axis
+            mm_per_revolution = unit per revolution of the motor axis
+            percentage_constant_speed = time in percentage of the time the constant speed of the axis remains
+            modetype = "NOT USED" axis mode
+            acc_min = Minimum acceleration and deceleration of the first motor/Axis
+            vel_min = Minimum speed of the first motor/Axis
+            acc_max = Minimum acceleration and deceleration of the second motor/Axis
+            vel_max = Minimum speed of the second motor/Axis
+            StrokeThreshold = minimum threshold of travel of the motor for the algorithm calculation
+            FactorGroup = Conversion factor for sending the motor driver parameters
+        
         """
 
-        #self.Xstart = Xstart
-        #self.Ystart = Ystart
-        #self.X = X
-        #self.Y = Y
         self.M1_Acc_Dec = M1_Acc_Dec
         self.M1_MaxSpeed = M1_MaxSpeed
         self.M2_Acc_Dec = M2_Acc_Dec
@@ -51,7 +65,7 @@ class ProfileGenerator:
         M1_revToSend = (M1_mm / self.mm_per_revolution) * self.FactorGroup
         M2_revToSend = (M2_mm / self.mm_per_revolution) * self.FactorGroup
         
-        #Inversione del segno se necesario
+        #Reverse the sign if necessary
         if M1_mm < 0:
             M1_mm = M1_mm * -1
         if M2_mm < 0:
@@ -66,20 +80,19 @@ class ProfileGenerator:
                AxisRecalculate = "None M2 not moving"
                BlockAxisRecalculate  = True
         else:
-            print("NESSUN VALORE A ZERO")
             BlockAxisRecalculate  = False
 
         #Check Max displacement axis and decide when is the max stroke axis
 
         if ((X < self.StrokeThreshold) and (Y < self.StrokeThreshold)):  # Set Threshold at 1mm cartesian moviment
-            print("Traiettoria troppo corta utilizzare velocità minime..................")
+            print("Trajectory too short use minimum speeds..................")
             (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
              Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
              M2_TimeVcons) = self.TrajectoryGenerator(M1_mm, M2_mm,self.vel_min,self.vel_min,self.acc_min,self.acc_min,self.mm_per_revolution)
 
         else:
 
-            # ------------------------GENERATORE DI TRAIETTORIA, GENERA ENTRAMBE LE TRAIETTORIE DEI MOTORI----------------------------------
+            # ------------------------TRAJECTORY GENERATOR, GENERATES BOTH MOTOR TRAJECTORIES----------------------------------
 
             (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
              Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
@@ -1065,12 +1078,16 @@ class ProfileGenerator:
         # Inizializzazione dei marcatori
         marker_x, = ax.plot([], [], 'ro', label='Asse X')
         marker_y, = ax.plot([], [], 'bo', label='Asse Y')
+        marker_xy, = ax.plot([], [], 'go', label='Intersezione')
         ax.legend()
 
         # Funzione di inizializzazione
         def init():
             marker_x.set_data([], [])
             marker_y.set_data([], [])
+            marker_xy.set_data([], [])
+            cursor_x.set_xdata([0])
+            cursor_y.set_ydata([0])
             return marker_x, marker_y
         
         cursor_x = ax.axvline(x=0, color='r', linestyle='--', lw=1)  # Linea verticale rossa tratteggiata
@@ -1126,7 +1143,7 @@ if __name__ == "__main__":
 
     XSim = [0,200,400,250,10,300,250]
     YSim = [0,200,10,526,10,30,350]
-    
+
     i = 1
     while i != 7:
         VelX,AccX,VelY,AccY,TjX,TjY,TmX, TmY, M1_position,M2_position = generator.SyncCoreXYAxis(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
