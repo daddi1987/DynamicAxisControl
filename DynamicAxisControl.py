@@ -8,7 +8,7 @@ import matplotlib.animation as animation
 import time
 
 
-class ProfileGenerator:
+class ProfileGenerator:  #int
 
     found = False
     best_vel = None
@@ -60,23 +60,23 @@ class ProfileGenerator:
 
         print("Generate Sync for CORE XY")
 
-        M1_mm, M2_mm = self.calculate_theta(X,Y,Xstart,Ystart)   # Ricalculate real displacement in millimeter
+        M1_mm, M2_mm, StrokeM1, StrokeM2 = self.calculate_theta(X,Y,Xstart,Ystart)   # Ricalculate real displacement in millimeter
 
-        M1_revToSend = (M1_mm / self.mm_per_revolution) * self.FactorGroup
-        M2_revToSend = (M2_mm / self.mm_per_revolution) * self.FactorGroup
+        M1_revToSend = (M1_mm * self.FactorGroup)
+        M2_revToSend = (M2_mm * self.FactorGroup)
         
         #Reverse the sign if necessary
-        if M1_mm < 0:
-            M1_mm = M1_mm * -1
-        if M2_mm < 0:
-            M2_mm = M2_mm * -1
+        if StrokeM1 < 0:
+            StrokeM1 = StrokeM1 * -1
+        if StrokeM2 < 0:
+            StrokeM2 = StrokeM2 * -1
             
-        if   (M1_mm == 0):
-               M1_mm = .0001
+        if   (StrokeM1 == 0):
+               StrokeM1 = .0001
                AxisRecalculate = "None M1 not moving"
                BlockAxisRecalculate  = True
-        elif (M2_mm == 0):
-               M2_mm = .0001
+        elif (StrokeM2 == 0):
+               StrokeM2 = .0001
                AxisRecalculate = "None M2 not moving"
                BlockAxisRecalculate  = True
         else:
@@ -88,7 +88,7 @@ class ProfileGenerator:
             print("Trajectory too short use minimum speeds..................")
             (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
              Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
-             M2_TimeVcons) = self.TrajectoryGenerator(M1_mm, M2_mm,self.vel_min,self.vel_min,self.acc_min,self.acc_min,self.mm_per_revolution)
+             M2_TimeVcons) = self.TrajectoryGenerator(StrokeM1, StrokeM2,self.vel_min,self.vel_min,self.acc_min,self.acc_min,self.mm_per_revolution, StrokeM1, StrokeM2)
 
         else:
 
@@ -96,7 +96,7 @@ class ProfileGenerator:
 
             (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
              Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
-             M2_TimeVcons) = self.TrajectoryGenerator(M1_mm, M2_mm,self.M1_MaxSpeed,self.M2_MaxSpeed,self.M1_Acc_Dec,self.M1_Acc_Dec,self.mm_per_revolution)
+             M2_TimeVcons) = self.TrajectoryGenerator(StrokeM1, StrokeM2,self.M1_MaxSpeed,self.M2_MaxSpeed,self.M1_Acc_Dec,self.M1_Acc_Dec,self.mm_per_revolution, StrokeM1, StrokeM2)
             
 
         if Tj_Stroke_M1 > Tj_Stroke_M2:
@@ -108,11 +108,11 @@ class ProfileGenerator:
             colorAxis1 = "blue"
             TimeTraj = M1_TrajectoryTime
             SpeedTraj = X_Trajectory
-            PositionXAxis = M1_mm
-            PositionYAxis = M2_mm
+            PositionXAxis = StrokeM1
+            PositionYAxis = StrokeM2
             TimeYAxis = M2_TrajectoryTotalTime
-            AccAxisX = self.M2_Acc_Dec / 1000
-            MaxSpeedXAxis = self.M2_MaxSpeed / 1000
+            AccAxisX = self.M2_Acc_Dec
+            MaxSpeedXAxis = self.M2_MaxSpeed
             TimeAccTrajectorySyn = M1_AccTime
             TimeDecTrajectorySyn = M1_AccTime
             TimeSpeedTrjectorySyn = M1_TimeVcons
@@ -121,11 +121,11 @@ class ProfileGenerator:
                 AxisRecalculate = AxisRecalculate
             else:
                 AxisRecalculate = "M2"
-            PositionXAxis = M1_mm
-            PositionYAxis = M2_mm
+            PositionXAxis = StrokeM1
+            PositionYAxis = StrokeM2
             TimeXAxis = M1_TrajectoryTotalTime
-            AccAxisX = self.M1_Acc_Dec * 1000
-            MaxSpeedXAxis = self.M1_MaxSpeed * 1000
+            AccAxisX = self.M1_Acc_Dec
+            MaxSpeedXAxis = self.M1_MaxSpeed
             # TimeYAxis = StrokeTime_Eq
             # AccAxisY = acceleration_Eq
             # MaxSpeedYAxis = max_velocity_Eq
@@ -153,11 +153,11 @@ class ProfileGenerator:
             colorAxis1 = "green"
             TimeTraj = M2_TrajectoryTime
             SpeedTraj = Y_Trajectory
-            PositionXAxis = M1_mm
-            PositionYAxis = M2_mm
+            PositionXAxis = StrokeM1
+            PositionYAxis = StrokeM2
             TimeXAxis = M1_TrajectoryTotalTime
-            AccAxisX = self.M1_Acc_Dec / 1000
-            MaxSpeedXAxis = self.M1_MaxSpeed / 1000
+            AccAxisX = self.M1_Acc_Dec
+            MaxSpeedXAxis = self.M1_MaxSpeed
             TimeAccTrajectorySyn = M2_AccTime
             TimeDecTrajectorySyn = M2_AccTime
             TimeSpeedTrjectorySyn = M2_TimeVcons
@@ -166,14 +166,14 @@ class ProfileGenerator:
                 AxisRecalculate = AxisRecalculate
             else:
                 AxisRecalculate = "M1"
-            PositionXAxis = M1_mm
-            PositionYAxis = M2_mm
+            PositionXAxis = StrokeM1
+            PositionYAxis = StrokeM2
             # TimeXAxis = StrokeTime_Eq
             # AccAxisX = acceleration_Eq
             # MaxSpeedXAxis = max_velocity_Eq
             TimeYAxis = M2_TrajectoryTotalTime
-            AccAxisY = self.M2_Acc_Dec * 1000
-            MaxSpeedYAxis = self.M2_MaxSpeed * 1000
+            AccAxisY = self.M2_Acc_Dec
+            MaxSpeedYAxis = self.M2_MaxSpeed
             MaxTimeAxis = TimeYAxis
             # TimeAccX = TimeAcc_Eq
             TimeAccY = M1_AccTime
@@ -222,10 +222,10 @@ class ProfileGenerator:
         position_M1_interpolated = interp_X(time_total)
         position_M2_interpolated = interp_Y(time_total)
 
-        Rev_MaxSpeedXAxis = (MaxSpeedXAxis * self.mm_per_revolution) / self.FactorGroup
-        Rev_AccAxisX = (AccAxisX * self.mm_per_revolution) / self.FactorGroup
-        Rev_MaxSpeedYAxis = (MaxSpeedYAxis * self.mm_per_revolution) / self.FactorGroup
-        Rev_AccAxisY = (AccAxisY * self.mm_per_revolution) / self.FactorGroup
+        Rev_MaxSpeedXAxis = MaxSpeedXAxis
+        Rev_AccAxisX = AccAxisX
+        Rev_MaxSpeedYAxis = MaxSpeedYAxis
+        Rev_AccAxisY = AccAxisY
 
 
 
@@ -297,7 +297,7 @@ class ProfileGenerator:
                     fontsize=8, color='black')
 
             # Sotto-riquadro 2: Informazioni Parte 2
-            ax4_2 = fig.add_subplot(gs_bottom_right[0, 0])
+            ax4_2 = fig.add_subplot(gs_bottom_right[1, 0])
             ax4_2.axis('off')
 
             ax4_2.text(0.5, -0.3,
@@ -323,9 +323,9 @@ class ProfileGenerator:
             plt.grid(True)
 
             # Mostra entrambi i grafici
-            plt.tight_layout()
+
             plt.show()
-        return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis, TimeX, TimeY, M1_revToSend, M2_revToSend
+        return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis, TimeX, TimeY, int(M1_revToSend), int(M2_revToSend)
 
     def SyncLinearAxes (self, Xstart, Ystart, X, Y, Graph=True):
 
@@ -791,18 +791,21 @@ class ProfileGenerator:
 
     def calculate_theta(self, X, Y, Xstart, Ystart):
 
-        delta_X = X - Xstart
-        delta_Y = Y - Ystart
-
-        M1 = (-delta_X - delta_Y)/2
-        M2 = (-delta_X + delta_Y)/2
+        M1 = (-X - Y) / (self.mm_per_revolution)
+        M2 = (-X + Y) / (self.mm_per_revolution)
+           
+        delta_X = M1 - Xstart
+        delta_Y = M2 - Ystart
+   
 
         M1_LinearStroke = M1
         M2_LinearStroke = M2
+        StrokeM1 = delta_X
+        StrokeM2 = delta_Y
 
-        return M1_LinearStroke, M2_LinearStroke
+        return M1_LinearStroke, M2_LinearStroke, StrokeM1, StrokeM2
 
-    def TrajectoryGenerator(self, dPosition_M1, dPosition_M2, MaxSpeed_M1, MaxSpeed_M2, AccDec_M1, AccDec_M2,RevolutionMotor):
+    def TrajectoryGenerator(self, dPosition_M1, dPosition_M2, MaxSpeed_M1, MaxSpeed_M2, AccDec_M1, AccDec_M2,RevolutionMotor, StrokeM1, StrokeM2):
         aPositionM1 = dPosition_M1 / 100  # NON UTILIZZATO  Controllare perchè divisione per 100  NON UTILIZZATO 
         aPositionM2 = dPosition_M2 / 100  # NON UTILIZZATO Controllare perchè divisione per 100  NON UTILIZZATO 
 
@@ -812,15 +815,15 @@ class ProfileGenerator:
         # Conversione da rivoluzioni a mm 
         aPositionM1_mm = aPositionM1 * RevolutionMotor   # NON UTILIZZATO 
         aPositionM2_mm = aPositionM2 * RevolutionMotor   # NON UTILIZZATO 
-        Stroke_M1 = dPositionM1
-        Stroke_M2 = dPositionM2
+        Stroke_M1 = StrokeM1
+        Stroke_M2 = StrokeM2
 
         M1_distanceRevolution = Stroke_M1 / RevolutionMotor   # NON UTILIZZATO
         M2_distanceRevolution = Stroke_M2 / RevolutionMotor   # NON UTILIZZATO  
 
         # Velocità massima in mm/s
-        MaxSpeed_M1_mm = MaxSpeed_M1 * self.FactorGroup
-        MaxSpeed_M2_mm = MaxSpeed_M2 * self.FactorGroup
+        MaxSpeed_M1_mm = MaxSpeed_M1 #* self.FactorGroup
+        MaxSpeed_M2_mm = MaxSpeed_M2 #* self.FactorGroup
         dSpeedM1_rev = MaxSpeed_M1_mm / RevolutionMotor
         dSpeedM2_rev = MaxSpeed_M2_mm / RevolutionMotor
 
@@ -829,12 +832,12 @@ class ProfileGenerator:
         StrokeTime_M2 = Stroke_M2 / MaxSpeed_M2_mm
 
         # Tempo di accelerazione per l'asse M1
-        AccDec_M1 = AccDec_M1 * self.FactorGroup
+        AccDec_M1 = AccDec_M1 #* self.FactorGroup
         M1_AccTime = MaxSpeed_M1_mm / AccDec_M1
         StrokeAccDec_M1 = (MaxSpeed_M1_mm ** 2) / (2 * AccDec_M1)
 
         # Tempo di accelerazione per l'asse M2
-        AccDec_M2 = AccDec_M2 * self.FactorGroup
+        AccDec_M2 = AccDec_M2 #* self.FactorGroup
         M2_AccTime = MaxSpeed_M2_mm / AccDec_M2
         StrokeAccDec_M2 = (MaxSpeed_M2_mm ** 2) / (2 * AccDec_M2)
 
