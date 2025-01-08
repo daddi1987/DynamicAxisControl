@@ -65,6 +65,11 @@ class ProfileGenerator:  #int
         M1_revToSend = (M1_mm * self.FactorGroup)
         M2_revToSend = (M2_mm * self.FactorGroup)
         
+        M1_MaxSpeed = (self.M1_MaxSpeed*1000) / self.mm_per_revolution
+        M2_MaxSpeed = (self.M2_MaxSpeed*1000) / self.mm_per_revolution
+        M1_Acc_Dec = (self.M1_Acc_Dec*1000) / self.mm_per_revolution
+        M2_Acc_Dec = (self.M2_Acc_Dec*1000) / self.mm_per_revolution
+
         #Reverse the sign if necessary
         if StrokeM1 < 0:
             StrokeM1 = StrokeM1 * -1
@@ -88,7 +93,7 @@ class ProfileGenerator:  #int
             print("Trajectory too short use minimum speeds..................")
             (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
              Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
-             M2_TimeVcons) = self.TrajectoryGenerator(StrokeM1, StrokeM2,self.vel_min,self.vel_min,self.acc_min,self.acc_min,self.mm_per_revolution, StrokeM1, StrokeM2)
+             M2_TimeVcons) = self.TrajectoryGenerator(StrokeM1, StrokeM2,self.vel_min,self.vel_min,self.acc_min,self.acc_min,self.mm_per_revolution, StrokeM1, StrokeM2,UnitConvert=False)
 
         else:
 
@@ -96,7 +101,7 @@ class ProfileGenerator:  #int
 
             (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
              Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
-             M2_TimeVcons) = self.TrajectoryGenerator(StrokeM1, StrokeM2,self.M1_MaxSpeed,self.M2_MaxSpeed,self.M1_Acc_Dec,self.M1_Acc_Dec,self.mm_per_revolution, StrokeM1, StrokeM2)
+             M2_TimeVcons) = self.TrajectoryGenerator(StrokeM1, StrokeM2,M1_MaxSpeed,M2_MaxSpeed,M1_Acc_Dec,M2_Acc_Dec,self.mm_per_revolution, StrokeM1, StrokeM2,UnitConvert=False)
             
 
         if Tj_Stroke_M1 > Tj_Stroke_M2:
@@ -111,8 +116,8 @@ class ProfileGenerator:  #int
             PositionXAxis = StrokeM1
             PositionYAxis = StrokeM2
             TimeYAxis = M2_TrajectoryTotalTime
-            AccAxisX = self.M2_Acc_Dec
-            MaxSpeedXAxis = self.M2_MaxSpeed
+            AccAxisX = M2_Acc_Dec
+            MaxSpeedXAxis = M2_MaxSpeed
             TimeAccTrajectorySyn = M1_AccTime
             TimeDecTrajectorySyn = M1_AccTime
             TimeSpeedTrjectorySyn = M1_TimeVcons
@@ -124,8 +129,8 @@ class ProfileGenerator:  #int
             PositionXAxis = StrokeM1
             PositionYAxis = StrokeM2
             TimeXAxis = M1_TrajectoryTotalTime
-            AccAxisX = self.M1_Acc_Dec
-            MaxSpeedXAxis = self.M1_MaxSpeed
+            AccAxisX = M1_Acc_Dec
+            MaxSpeedXAxis = M1_MaxSpeed
             # TimeYAxis = StrokeTime_Eq
             # AccAxisY = acceleration_Eq
             # MaxSpeedYAxis = max_velocity_Eq
@@ -156,8 +161,8 @@ class ProfileGenerator:  #int
             PositionXAxis = StrokeM1
             PositionYAxis = StrokeM2
             TimeXAxis = M1_TrajectoryTotalTime
-            AccAxisX = self.M1_Acc_Dec
-            MaxSpeedXAxis = self.M1_MaxSpeed
+            AccAxisX = M1_Acc_Dec
+            MaxSpeedXAxis = M1_MaxSpeed
             TimeAccTrajectorySyn = M2_AccTime
             TimeDecTrajectorySyn = M2_AccTime
             TimeSpeedTrjectorySyn = M2_TimeVcons
@@ -172,8 +177,8 @@ class ProfileGenerator:  #int
             # AccAxisX = acceleration_Eq
             # MaxSpeedXAxis = max_velocity_Eq
             TimeYAxis = M2_TrajectoryTotalTime
-            AccAxisY = self.M2_Acc_Dec
-            MaxSpeedYAxis = self.M2_MaxSpeed
+            AccAxisY = M2_Acc_Dec
+            MaxSpeedYAxis = M2_MaxSpeed
             MaxTimeAxis = TimeYAxis
             # TimeAccX = TimeAcc_Eq
             TimeAccY = M1_AccTime
@@ -340,7 +345,7 @@ class ProfileGenerator:  #int
 
         (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
          Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
-         M2_TimeVcons) = self.TrajectoryGenerator(X, Y, self.M1_MaxSpeed, self.M2_MaxSpeed, self.M1_Acc_Dec, self.M2_Acc_Dec,self.mm_per_revolution)
+         M2_TimeVcons) = self.TrajectoryGenerator(X, Y, self.M1_MaxSpeed, self.M2_MaxSpeed, self.M1_Acc_Dec, self.M2_Acc_Dec,self.mm_per_revolution,X,Y,UnitConvert=True)
 
         if Tj_Stroke_M1 > Tj_Stroke_M2:
             print("Y Axis too Slow - Ricalculate this trajectory")
@@ -581,7 +586,7 @@ class ProfileGenerator:  #int
                                              self.M1_MaxSpeed,
                                              self.M2_MaxSpeed,
                                              self.M1_Acc_Dec,
-                                             self.M2_Acc_Dec,self.mm_per_revolution)
+                                             self.M2_Acc_Dec,self.mm_per_revolution,X,Y,UnitConvert=True)
 
         if Tj_Stroke_M1 > Tj_Stroke_M2:
             print("Y Axis too Slow - Ricalculate this trajectory")
@@ -793,7 +798,10 @@ class ProfileGenerator:  #int
 
         M1 = (-X - Y) / (self.mm_per_revolution)
         M2 = (-X + Y) / (self.mm_per_revolution)
-           
+
+        Xstart = (-Xstart -Ystart) / (self.mm_per_revolution)
+        Ystart = (-Xstart +Ystart) / (self.mm_per_revolution)
+
         delta_X = M1 - Xstart
         delta_Y = M2 - Ystart
    
@@ -805,7 +813,7 @@ class ProfileGenerator:  #int
 
         return M1_LinearStroke, M2_LinearStroke, StrokeM1, StrokeM2
 
-    def TrajectoryGenerator(self, dPosition_M1, dPosition_M2, MaxSpeed_M1, MaxSpeed_M2, AccDec_M1, AccDec_M2,RevolutionMotor, StrokeM1, StrokeM2):
+    def TrajectoryGenerator(self, dPosition_M1, dPosition_M2, MaxSpeed_M1, MaxSpeed_M2, AccDec_M1, AccDec_M2,RevolutionMotor, StrokeM1, StrokeM2,UnitConvert=False):
         aPositionM1 = dPosition_M1 / 100  # NON UTILIZZATO  Controllare perchè divisione per 100  NON UTILIZZATO 
         aPositionM2 = dPosition_M2 / 100  # NON UTILIZZATO Controllare perchè divisione per 100  NON UTILIZZATO 
 
@@ -822,8 +830,16 @@ class ProfileGenerator:  #int
         M2_distanceRevolution = Stroke_M2 / RevolutionMotor   # NON UTILIZZATO  
 
         # Velocità massima in mm/s
-        MaxSpeed_M1_mm = MaxSpeed_M1 #* self.FactorGroup
-        MaxSpeed_M2_mm = MaxSpeed_M2 #* self.FactorGroup
+        if UnitConvert == True:
+            MaxSpeed_M1_mm = MaxSpeed_M1 * 1000
+            MaxSpeed_M2_mm = MaxSpeed_M2 * 1000
+            AccDec_M1 = AccDec_M1 * 1000
+            AccDec_M2 = AccDec_M2 * 1000
+        else:
+            MaxSpeed_M1_mm = MaxSpeed_M1 
+            MaxSpeed_M2_mm = MaxSpeed_M2 
+            AccDec_M1 = AccDec_M1 
+            AccDec_M2 = AccDec_M2
         dSpeedM1_rev = MaxSpeed_M1_mm / RevolutionMotor
         dSpeedM2_rev = MaxSpeed_M2_mm / RevolutionMotor
 
@@ -832,12 +848,12 @@ class ProfileGenerator:  #int
         StrokeTime_M2 = Stroke_M2 / MaxSpeed_M2_mm
 
         # Tempo di accelerazione per l'asse M1
-        AccDec_M1 = AccDec_M1 #* self.FactorGroup
+        
         M1_AccTime = MaxSpeed_M1_mm / AccDec_M1
         StrokeAccDec_M1 = (MaxSpeed_M1_mm ** 2) / (2 * AccDec_M1)
 
         # Tempo di accelerazione per l'asse M2
-        AccDec_M2 = AccDec_M2 #* self.FactorGroup
+        
         M2_AccTime = MaxSpeed_M2_mm / AccDec_M2
         StrokeAccDec_M2 = (MaxSpeed_M2_mm ** 2) / (2 * AccDec_M2)
 
@@ -851,7 +867,7 @@ class ProfileGenerator:  #int
             v_max_reached_M1 = (Stroke_M1 * AccDec_M1) ** 0.5
         else:
             # Profilo trapezoidale per M1
-            d_const_M1 = Stroke_M1 - 2 * StrokeAccDec_M1
+            d_const_M1 = Stroke_M1 - (2 * StrokeAccDec_M1)
             t_const = d_const_M1 / MaxSpeed_M1_mm
             StrokeTotalTime_M1 = 2 * M1_AccTime + t_const
             v_max_reached_M1 = MaxSpeed_M1_mm
@@ -1064,6 +1080,14 @@ class ProfileGenerator:  #int
         plt.show()
 
     def AxisSimulator2D (self, PositionXAxis, PositionYAxis, TimeX, TimeY, speed_factor,AxisType="CoreXY") :
+        
+        if AxisType == "CoreXY" :
+            StrokeSimX = 30
+            StrokeSimY = 30
+        else:
+             StrokeSimX = 450
+             StrokeSimY = 550
+
         # Simulazione dei dati di esempio
         num_points = 3000
 
@@ -1072,8 +1096,8 @@ class ProfileGenerator:  #int
 
         # Inizializzazione del grafico
         fig, ax = plt.subplots()
-        ax.set_xlim(0, 450)
-        ax.set_ylim(0, 560)
+        ax.set_xlim(0, StrokeSimX)
+        ax.set_ylim(0, StrokeSimY)
         ax.set_xlabel('Asse X (mm)')
         ax.set_ylabel('Asse Y (mm)')
         ax.set_title('Animazione Real-Time Assi X e Y')
@@ -1144,15 +1168,15 @@ if __name__ == "__main__":
     # Parametri di esempio
     generator = ProfileGenerator(2.0,0.5,2.0,0.5,38,1000)
 
-    XSim = [0,200,400,250,10,300,250]
-    YSim = [0,200,10,526,10,30,350]
+    XSim = [0,200,100,250,10,300,250]
+    YSim = [0,200,100,526,10,30,350]
 
     i = 1
     while i != 7:
         VelX,AccX,VelY,AccY,TjX,TjY,TmX, TmY, M1_position,M2_position = generator.SyncCoreXYAxis(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
         #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
         #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.LinearMotion(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
-        generator.AxisSimulator2D(TjX, TjY, TmX, TmY, 100)
+        generator.AxisSimulator2D(TjX, TjY, TmX, TmY, 100, AxisType="CoreXY")
         i=i+1
         #print("Posizione Motore 1: ",M1_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
         #print("Posizione Motore 2: ",M2_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
