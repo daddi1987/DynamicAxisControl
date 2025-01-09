@@ -75,17 +75,22 @@ class ProfileGenerator:  #int
             StrokeM1 = StrokeM1 * -1
         if StrokeM2 < 0:
             StrokeM2 = StrokeM2 * -1
-            
+
+        M1_Block = False
+        M2_Block = False
+        BlockAxisRecalculate = False
         if   (StrokeM1 == 0):
                StrokeM1 = .0001
                AxisRecalculate = "None M1 not moving"
                BlockAxisRecalculate  = True
-        elif (StrokeM2 == 0):
+               M1_Block = True
+        if (StrokeM2 == 0):
                StrokeM2 = .0001
                AxisRecalculate = "None M2 not moving"
                BlockAxisRecalculate  = True
-        else:
-            BlockAxisRecalculate  = False
+               M2_Block = True
+
+
 
         #Check Max displacement axis and decide when is the max stroke axis
 
@@ -104,7 +109,7 @@ class ProfileGenerator:  #int
              M2_TimeVcons) = self.TrajectoryGenerator(StrokeM1, StrokeM2,M1_MaxSpeed,M2_MaxSpeed,M1_Acc_Dec,M2_Acc_Dec,self.mm_per_revolution, StrokeM1, StrokeM2,UnitConvert=False)
             
 
-        if Tj_Stroke_M1 > Tj_Stroke_M2:
+        if Tj_Stroke_M1 > Tj_Stroke_M2:                             # CHANGE IN CASE TO MIRROR THE HOME POSITION
             print("Y Axis too Slow - Ricalculate this trajectory")
             print("\n")
             AxisStroke = Tj_Stroke_M2  # mm
@@ -289,8 +294,8 @@ class ProfileGenerator:  #int
                     (   f'                                 DINAMICHE UTILIZZATE:    \n\n'
                         f'- Corsa Asse X (demand): {X} mm\n'
                         f'- Corsa Asse Y (demand): {Y} mm\n'
-                        f'- Corsa Asse M1 (Calculated): {M1_mm} mm\n'
-                        f'- Corsa Asse M2 (Calculated): {M2_mm} mm\n'                                                
+                        f'- Corsa Asse M1 (Calculated): {StrokeM1} mm\n'
+                        f'- Corsa Asse M2 (Calculated): {StrokeM2} mm\n'                                                
                         f'- Speed Max Axis X (demand): {self.M1_MaxSpeed} mm/s\n'
                         f'- Max Acceleration Axis X(demand): {self.M1_Acc_Dec} mm/s²\n'
                         f'- Speed Max Axis Y(demand): {self.M2_MaxSpeed} mm/s\n'
@@ -330,7 +335,7 @@ class ProfileGenerator:  #int
             # Mostra entrambi i grafici
 
             plt.show()
-        return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis, TimeX, TimeY, int(M1_revToSend), int(M2_revToSend)
+        return  round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY, 3), PositionXAxis, PositionYAxis, TimeX, TimeY, int(M1_revToSend), int(M2_revToSend), M1_Block, M2_Block
 
     def SyncLinearAxes (self, Xstart, Ystart, X, Y, Graph=True):
 
@@ -799,17 +804,17 @@ class ProfileGenerator:  #int
         M1 = (-X - Y) / (self.mm_per_revolution)
         M2 = (-X + Y) / (self.mm_per_revolution)
 
-        Xstart = (-Xstart -Ystart) / (self.mm_per_revolution)
-        Ystart = (-Xstart +Ystart) / (self.mm_per_revolution)
+        XstartA = (-Xstart -Ystart) / (self.mm_per_revolution)
+        YstartA = (-Xstart +Ystart) / (self.mm_per_revolution)
 
-        delta_X = M1 - Xstart
-        delta_Y = M2 - Ystart
+        delta_M1 = M1 - XstartA
+        delta_M2 = M2 - YstartA
    
 
-        M1_LinearStroke = M1
-        M2_LinearStroke = M2
-        StrokeM1 = delta_X
-        StrokeM2 = delta_Y
+        M1_LinearStroke = M2         # Swap in case to reverse or mirror the home position
+        M2_LinearStroke = M1         # Swap in case to reverse or mirror the home position
+        StrokeM1 = delta_M2           # Swap in case to reverse or mirror the home position
+        StrokeM2 = delta_M1           # Swap in case to reverse or mirror the home position
 
         return M1_LinearStroke, M2_LinearStroke, StrokeM1, StrokeM2
 
