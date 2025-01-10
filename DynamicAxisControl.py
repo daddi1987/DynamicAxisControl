@@ -120,7 +120,7 @@ class ProfileGenerator:  #int
                  Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
                  M2_TimeVcons) = self.TrajectoryGenerator(StrokeM1, StrokeM2,M1_MaxSpeed,M2_MaxSpeed,M1_Acc_Dec,M2_Acc_Dec,self.mm_per_revolution, StrokeM1, StrokeM2,UnitConvert=False)
 
-
+                #------------------------CHECK THE MAGIOR STROKE AXIS---------------------------------------
             if Tj_Stroke_M1 > Tj_Stroke_M2:                             # CHANGE IN CASE TO MIRROR THE HOME POSITION
                 print("Y Axis too Slow - Ricalculate this trajectory")
                 print("\n")
@@ -344,14 +344,14 @@ class ProfileGenerator:  #int
 
     def SyncLinearAxes (self, Xstart, Ystart, X, Y, Graph=True):
 
-        # Calculated displacement value and convert in absolute value
+        #-----------------------------------Calculated displacement value and convert in absolute value
         X = X - Xstart
         Y = Y - Ystart
 
         X = abs(X)
         Y = abs(Y)
 
-        # ------------------------GENERATORE DI TRAIETTORIA, GENERA ENTRAMBE LE TRAIETTORIE DEI MOTORI----------------------------------
+        # ------------------------TRAJECTORY GENERATOR, GENERATES BOTH MOTOR TRAJECTORIES----------------------------------
 
         (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
          Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
@@ -404,13 +404,9 @@ class ProfileGenerator:  #int
             TimeXAxis = M1_TrajectoryTotalTime
             AccAxisX = self.M1_Acc_Dec * 1000
             MaxSpeedXAxis = self.M1_MaxSpeed * 1000
-            # TimeYAxis = StrokeTime_Eq
-            # AccAxisY = acceleration_Eq
-            # MaxSpeedYAxis = max_velocity_Eq
             MaxTimeAxis = TimeXAxis
             TimeAccX = M1_AccTime
-            # TimeAccY = TimeAcc_Eq
-            # --------------------RICALCOLARE IL PROFILO DI VELOCITA'-------------------------#
+            # --------------------RECALCULATE SPEED PROFILE-------------------------#
             acc_Y_new, max_speed_Y_new = self.calculate_trajectoryAccPhaseSync(TimeAccX, PositionYAxis, TimeXAxis)
             t_acc, t_const, t_dec, total_time, TimeAlghorytmics, SpeedAlghorytmics = self.SingleTrajectoryGenerator(
                 AxisStroke, max_speed_Y_new, acc_Y_new)
@@ -419,21 +415,17 @@ class ProfileGenerator:  #int
             MaxSpeedYAxis = max_speed_Y_new
             TimeYAxis = total_time
 
-            # ------------------------------------FINE-----------------------------------------
+            # ------------------------------------END-----------------------------------------
         else:
             print("Calulate Position --- X")
             PositionXAxis = X
             PositionYAxis = Y
-            # TimeXAxis = StrokeTime_Eq
-            # AccAxisX = acceleration_Eq
-            # MaxSpeedXAxis = max_velocity_Eq
             TimeYAxis = M2_TrajectoryTotalTime
             AccAxisY = self.M2_Acc_Dec * 1000
             MaxSpeedYAxis = self.M2_MaxSpeed * 1000
             MaxTimeAxis = TimeYAxis
-            # TimeAccX = TimeAcc_Eq
             TimeAccY = M1_AccTime
-            # --------------------RICALCOLARE IL PROFILO DI VELOCITA'-------------------------#
+            # --------------------RECALCULATE SPEED PROFILE-------------------------#
             acc_X_new, max_speed_X_new = self.calculate_trajectoryAccPhaseSync(TimeAccY, PositionXAxis, TimeYAxis)
             t_acc, t_const, t_dec, total_time, TimeAlghorytmics, SpeedAlghorytmics = self.SingleTrajectoryGenerator(
                 AxisStroke, max_speed_X_new, acc_X_new)
@@ -442,38 +434,29 @@ class ProfileGenerator:  #int
             MaxSpeedXAxis = max_speed_X_new
             TimeXAxis = total_time
 
-        # Supponiamo di avere le posizioni calcolate e i tempi per X e Y
         TimeX, PositionXAxis = self.KinematicPosition(PositionXAxis, TimeXAxis, AccAxisX, MaxSpeedXAxis,
                                                  self.percentage_constant_speed)
         TimeY, PositionYAxis = self.KinematicPosition(PositionYAxis, TimeYAxis, AccAxisY, MaxSpeedYAxis,
                                                  self.percentage_constant_speed)
 
-        # Calcoliamo le differenze delle posizioni (distanze tra punti consecutivi)
         distance_X = np.diff(PositionXAxis)
         distance_Y = np.diff(PositionYAxis)
 
-        # Trova la lunghezza minima tra distance_X e distance_Y
         min_length = min(len(distance_X), len(distance_Y))
 
-        # Taglia gli array alla lunghezza minima
         distance_X = distance_X[:min_length]
         distance_Y = distance_Y[:min_length]
 
-        # Calcola la distanza totale percorsa sul piano XY
         distance_total = np.sqrt(distance_X ** 2 + distance_Y ** 2)
 
-        # Normalizzazione delle distanze per evitare allungamenti eccessivi
         distance_max = min(max(PositionXAxis), max(PositionYAxis))
         distance_total_normalized = np.clip(distance_total, a_min=0, a_max=distance_max)
 
-        # Normalizziamo il tempo in funzione della lunghezza minima di distance_total
         time_total = np.linspace(0, min(max(TimeX), max(TimeY)), len(distance_total_normalized))
 
-        # Interpoliamo le posizioni X e Y su un dominio temporale comune
         interp_X = interp1d(TimeX, PositionXAxis, kind='linear')
         interp_Y = interp1d(TimeY, PositionYAxis, kind='linear')
 
-        # Posizioni interpolate sul tempo comune
         position_M1_interpolated = interp_X(time_total)
         position_M2_interpolated = interp_Y(time_total)
 
@@ -483,68 +466,63 @@ class ProfileGenerator:  #int
         Rev_AccAxisY = (AccAxisY * self.mm_per_revolution) / self.FactorGroup
 
         if Graph == True:
-            # Creazione della figura con due riquadri (subplots)
             fig, axs = plt.subplots(2, 2, figsize=(12, 10))
-            gs = GridSpec(3, 2, figure=fig)  # 3 righe x 2 colonne
+            gs = GridSpec(3, 2, figure=fig)
 
-            # Grafico 1: Profilo di velocità
-            axs[0, 0].plot(M1_TrajectoryTime, X_Trajectory, label="Velocità Asse X (mm/s)", color="blue")
-            # axs[0,0].scatter(t, velocity_profile, color='orange', s=10)  # Aggiungi i punti campionati
-            axs[0, 0].plot(M2_TrajectoryTime, Y_Trajectory, label="Velocità Asse Y (mm/s)", color="green")
-            # axs[0,0].scatter(M2_TrajectoryTime, Y_Trajectory, color='yellow', s=10)  # Aggiungi i punti campionati
-            axs[0, 0].set_title("Profilo di Velocità")
-            axs[0, 0].set_xlabel("Tempo (s)")
-            axs[0, 0].set_ylabel("Velocità (mm/s)")
+            axs[0, 0].plot(M1_TrajectoryTime, X_Trajectory, label="Speed Axis X (mm/s)", color="blue")
+            # axs[0,0].scatter(t, velocity_profile, color='orange', s=10)  # samples
+            axs[0, 0].plot(M2_TrajectoryTime, Y_Trajectory, label="Speed Axis Y (mm/s)", color="green")
+            # axs[0,0].scatter(M2_TrajectoryTime, Y_Trajectory, color='yellow', s=10)  # samples
+            axs[0, 0].set_title("Speed Profile")
+            axs[0, 0].set_xlabel("Time (s)")
+            axs[0, 0].set_ylabel("Speed (mm/s)")
             axs[0, 0].grid(True)
             axs[0, 0].legend()
 
-            # Grafico 2: Profilo di velocità e accelerazione
-            axs[0, 1].plot(TimeAlghorytmics, SpeedAlghorytmics, label='Velocità Asse X (mm/s)', color=colorAxis)
-            axs[0, 1].plot(TimeTraj, SpeedTraj, label='Velocità Asse Y (mm/s)', color=colorAxis1)
+            axs[0, 1].plot(TimeAlghorytmics, SpeedAlghorytmics, label='Speed Axis X (mm/s)', color=colorAxis)
+            axs[0, 1].plot(TimeTraj, SpeedTraj, label='Speed Axis Y (mm/s)', color=colorAxis1)
             axs[0, 1].axhline(y=MaxSpeed_Flag, color='red', linestyle='--',
-                              label=f'Velocità Massima: {MaxSpeed_Flag:.2f} mm/s')
-            axs[0, 1].axvline(x=M1_AccTime, color='darkorange', linestyle='--', label='Fine accelerazione')
-            axs[0, 1].axvline(x=(max(TimeAlghorytmics) - M1_AccTime), color='darkorange', linestyle='--', label='Fine velocità costante')
-            axs[0, 1].axvline(x=TimeTrajectory, color='purple', linestyle='--', label='Fine movimento')
-            axs[0, 1].set_title('Profilo di Velocità e Accelerazione')
-            axs[0, 1].set_xlabel('Tempo (s)')
-            axs[0, 1].set_ylabel('Velocità (mm/s)')
+                              label=f'Max Speed: {MaxSpeed_Flag:.2f} mm/s')
+            axs[0, 1].axvline(x=M1_AccTime, color='darkorange', linestyle='--', label='End Acceleration')
+            axs[0, 1].axvline(x=(max(TimeAlghorytmics) - M1_AccTime), color='darkorange', linestyle='--', label='End constant speed')
+            axs[0, 1].axvline(x=TimeTrajectory, color='purple', linestyle='--', label='End Trajectory')
+            axs[0, 1].set_title('Acceleration and Speed Profile')
+            axs[0, 1].set_xlabel('Time (s)')
+            axs[0, 1].set_ylabel('Speed (mm/s)')
             axs[0, 1].legend()
             axs[0, 1].grid(True)
 
             axs3 = axs[1, 0]
-            # axs3_1 = axs3.twinx()
             axs3_1 = axs3.twiny()
-            # Interpolazione della traiettoria su un piano X-Y
+
             axs3.plot(TimeX, PositionXAxis, 'b', label="Interpolated Trajectory Axis X")
             axs3.plot(TimeY, PositionYAxis, 'g', label="Interpolated Trajectory Axis Y")
-            axs3_1.plot(position_M1_interpolated, position_M2_interpolated, 'r-', label="Traiettoria Interpolata")
+            axs3_1.plot(position_M1_interpolated, position_M2_interpolated, 'r-', label="Trajectory Interpolated")
 
-            # axs[1, 0].scatter(position_M1_interpolated, position_M2_interpolated, color='blue', marker='o', label='Punti Campionati')  # Grafico a dispersione
-            axs[1, 0].set_title("Interpolazione Traiettoria X-Y")
-            axs[1, 0].set_xlabel("Posizione Asse X (mm)")
-            axs[1, 0].set_ylabel("Posizione Asse Y (mm)")
-            # axs[1,0].set_xlim(-460, 460)  # Limite massimo dell'asse X
-            # axs[1,0].set_ylim(-600, 600)  # Limite massimo dell'asse Y
+            # axs[1, 0].scatter(position_M1_interpolated, position_M2_interpolated, color='blue', marker='o', label='Punti Campionati')  # samples
+            axs[1, 0].set_title("Interpolation Trajectory X-Y")
+            axs[1, 0].set_xlabel("Axis Position X (mm)")
+            axs[1, 0].set_ylabel("Axis Position Y (mm)")
+            # axs[1,0].set_xlim(-460, 460)  # End Stroke Axis X
+            # axs[1,0].set_ylim(-600, 600)  # End Stroke Axis Y
 
             axs[1, 1].axis('off')
             gs_bottom_right = gs[2, 1].subgridspec(2, 1, height_ratios=[1, 1])
 
-            # Sotto-riquadro 1: Informazioni Parte 1
             ax4_1 = fig.add_subplot(gs_bottom_right[0, 0])
             ax4_1.axis('off')
 
             ax4_1.text(0, 0.0,
-                    (   f'                                 DINAMICHE UTILIZZATE:    \n\n'
-                        f'- Corsa Asse X: {X} mm\n'
-                        f'- Corsa Asse Y: {Y} mm\n'
-                        f'- Speed Max Axis X (demand): {self.M1_MaxSpeed} mm/s\n'
-                        f'- Max Acceleration Axis X(demand): {self.M1_Acc_Dec} mm/s²\n'
-                        f'- Speed Max Axis Y(demand): {self.M2_MaxSpeed} mm/s\n'
-                        f'- Max Acceleration Axis Y(demand): {self.M2_Acc_Dec} mm/s²\n'
-                        f'- Time Trajectory Axis X: {round(M1_TrajectoryTotalTime, 3)} s\n'
-                        f'- Time Trajectory Axis Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
-                        f'- Asse Ricalcolato:  {AxisRecalculate}\n'
+                    (   f'                                 DYNAMICS USED:    \n\n'
+                        f'- STROKE AXIS X: {X} mm\n'
+                        f'- STROKE AXIS Y: {Y} mm\n'
+                        f'- SPEED MAX AXIS X (demand): {self.M1_MaxSpeed} mm/s\n'
+                        f'- MAX ACCELERATION AXIS X (demand): {self.M1_Acc_Dec} mm/s²\n'
+                        f'- SPEED MAX AXIS Y(demand): {self.M2_MaxSpeed} mm/s\n'
+                        f'- MAX ACCELERATION AXIS Y(demand): {self.M2_Acc_Dec} mm/s²\n'
+                        f'- TIME TRAJECTORY AXIS X: {round(M1_TrajectoryTotalTime, 3)} s\n'
+                        f'- TIME TRAJECTORY AXIS Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
+                        f'- AXIS RECALCULATED:  {AxisRecalculate}\n'
                         f'- \n'),
                     fontsize=8, color='black')
 
@@ -556,17 +534,17 @@ class ProfileGenerator:  #int
                     (f' '
                         f' \n'
                         f' \n'
-                        f'- Speed Max Axis X : {round(MaxSpeedXAxis, 2)} mm/s\n'
-                        f'- Max Acceleration Axis X: {round(AccAxisX, 2)} mm/s²\n'
-                        f'- Speed Max Axis Y : {round(MaxSpeedYAxis, 3)} mm/s\n'
-                        f'- Max Acceleration Axis Y : {round(AccAxisY, 3)} mm/s²\n'
-                        f'- Time Accelerazione Asse X: {round(M1_AccTime, 3)} s\n'
-                        f'- Time Accelerazione Asse Y: {round(M2_AccTime, 3)} s\n'
+                        f'- SPEED MAX AXIS X : {round(MaxSpeedXAxis, 2)} mm/s\n'
+                        f'- MAX ACCELERATION AXIS X: {round(AccAxisX, 2)} mm/s²\n'
+                        f'- SPEED MAX AXIS Y : {round(MaxSpeedYAxis, 3)} mm/s\n'
+                        f'- MAX ACCELERATION AXIS Y : {round(AccAxisY, 3)} mm/s²\n'
+                        f'- TIME ACCELERATION AXIS X: {round(M1_AccTime, 3)} s\n'
+                        f'- TIME ACCELERATION AXIS Y: {round(M2_AccTime, 3)} s\n'
                         f'- \n'
-                        f'- Speed Max Axis X : {round(Rev_MaxSpeedXAxis, 2)} (rev/s)\n'
-                        f'- Max Acceleration Axis X: {round(Rev_AccAxisX, 2)} (rev/s²)\n'
-                        f'- Speed Max Axis Y : {round(Rev_MaxSpeedYAxis, 3)} (rev/s)\n'
-                        f'- Max Acceleration Axis Y : {round(Rev_AccAxisY, 3)} (rev/s²)\n'
+                        f'- SPEED MAX AXIS X : {round(Rev_MaxSpeedXAxis, 2)} (rev/s)\n'
+                        f'- MAX ACCELERATION AXIS X: {round(Rev_AccAxisX, 2)} (rev/s²)\n'
+                        f'- SPEED MAX AXIS Y : {round(Rev_MaxSpeedYAxis, 3)} (rev/s)\n'
+                        f'- MAX ACCELERATION AXIS Y : {round(Rev_AccAxisY, 3)} (rev/s²)\n'
                         f'- \n'),
                     fontsize=8, color='black')
 
@@ -574,20 +552,19 @@ class ProfileGenerator:  #int
             axs[1, 0].legend()
             plt.grid(True)
 
-            # Mostra entrambi i grafici
             plt.tight_layout()
             plt.show()
         return  round(Rev_MaxSpeedXAxis, 4), round(Rev_AccAxisX, 4), round(Rev_MaxSpeedYAxis, 4), round(Rev_AccAxisY, 4), PositionXAxis, PositionYAxis, TimeX, TimeY
 
     def LinearMotion (self, Xstart,Ystart, X, Y, Graph=True):
 
-        # Calculated displacement value and convert in absolute value
+        #--------------------------Calculated displacement value and convert in absolute value
         X = X - Xstart
         Y = Y - Ystart
 
         X = abs(X)
         Y = abs(Y)
-        # ------------------------GENERATORE DI TRAIETTORIA, GENERA ENTRAMBE LE TRAIETTORIE DEI MOTORI----------------------------------
+        # ------------------------TRAJECTORY GENERATOR, GENERATES BOTH MOTOR TRAJECTORIES----------------------------------
 
         (X_Trajectory, Y_Trajectory, M1_TrajectoryTime, M2_TrajectoryTime, M1_AccTime, M2_AccTime, Tj_Stroke_M1,
          Tj_Stroke_M2, M1_TrajectoryTotalTime, M2_TrajectoryTotalTime, M1_TimeVcons,
@@ -597,7 +574,7 @@ class ProfileGenerator:  #int
                                              self.M2_MaxSpeed,
                                              self.M1_Acc_Dec,
                                              self.M2_Acc_Dec,self.mm_per_revolution,X,Y,UnitConvert=True)
-
+        #---------COMPARE AXIS-------------------
         if Tj_Stroke_M1 > Tj_Stroke_M2:
             print("Y Axis too Slow - Ricalculate this trajectory")
             print("\n")
@@ -653,9 +630,6 @@ class ProfileGenerator:  #int
             AccAxisX = self.M1_Acc_Dec * 1000
             MaxSpeedXAxis = self.M1_MaxSpeed * 1000
             MaxSpeedYAxis = self.M2_MaxSpeed * 1000
-            # TimeYAxis = StrokeTime_Eq
-            # AccAxisY = acceleration_Eq
-            # MaxSpeedYAxis = max_velocity_Eq
             MaxTimeAxis = TimeXAxis
             TimeAccX = M1_AccTime
             AccAxisY = self.M2_Acc_Dec * 1000
@@ -664,81 +638,67 @@ class ProfileGenerator:  #int
             print("Calulate Position --- X")
             PositionXAxis = X
             PositionYAxis = Y
-            # TimeXAxis = StrokeTime_Eq
-            # AccAxisX = acceleration_Eq
-            # MaxSpeedXAxis = max_velocity_Eq
             TimeYAxis = M2_TrajectoryTotalTime
             AccAxisY = self.M2_Acc_Dec * 1000
             MaxSpeedYAxis = self.M2_MaxSpeed * 1000
             MaxSpeedXAxis = self.M1_MaxSpeed * 1000
             MaxTimeAxis = TimeYAxis
-            # TimeAccX = TimeAcc_Eq
             TimeAccY = M1_AccTime
             AccAxisX = self.M1_Acc_Dec * 1000
 
-        # Supponiamo di avere le posizioni calcolate e i tempi per X e Y
         TimeX, PositionXAxis = self.KinematicPosition(PositionXAxis, TimeXAxis, AccAxisX, MaxSpeedXAxis,
                                                  self.percentage_constant_speed)
         TimeY, PositionYAxis = self.KinematicPosition(PositionYAxis, TimeYAxis, AccAxisY, MaxSpeedYAxis,
                                                  self.percentage_constant_speed)
 
-        # Calcoliamo le differenze delle posizioni (distanze tra punti consecutivi)
         distance_X = np.diff(PositionXAxis)
         distance_Y = np.diff(PositionYAxis)
 
-        # Trova la lunghezza minima tra distance_X e distance_Y
         min_length = min(len(distance_X), len(distance_Y))
 
-        # Taglia gli array alla lunghezza minima
         distance_X = distance_X[:min_length]
         distance_Y = distance_Y[:min_length]
 
-        # Calcola la distanza totale percorsa sul piano XY
         distance_total = np.sqrt(distance_X ** 2 + distance_Y ** 2)
 
-        # Normalizzazione delle distanze per evitare allungamenti eccessivi
         distance_max = min(max(PositionXAxis), max(PositionYAxis))
         distance_total_normalized = np.clip(distance_total, a_min=0, a_max=distance_max)
 
-        # Normalizziamo il tempo in funzione della lunghezza minima di distance_total
         time_total = np.linspace(0, min(max(TimeX), max(TimeY)), len(distance_total_normalized))
 
-        # Interpoliamo le posizioni X e Y su un dominio temporale comune
         interp_X = interp1d(TimeX, PositionXAxis, kind='linear')
         interp_Y = interp1d(TimeY, PositionYAxis, kind='linear')
 
-        # Posizioni interpolate sul tempo comune
         position_M1_interpolated = interp_X(time_total)
         position_M2_interpolated = interp_Y(time_total)
 
 
         if Graph == True:
-            # Creazione della figura con due riquadri (subplots)
-            fig, axs = plt.subplots(2, 2, figsize=(12, 10))
-            gs = GridSpec(3, 2, figure=fig)  # 3 righe x 2 colonne
 
-            # Grafico 1: Profilo di velocità
-            axs[0, 0].plot(M1_TrajectoryTime, X_Trajectory, label="Velocità Asse X (mm/s)", color="blue")
+            fig, axs = plt.subplots(2, 2, figsize=(12, 10))
+            gs = GridSpec(3, 2, figure=fig)
+
+            axs[0, 0].plot(M1_TrajectoryTime, X_Trajectory, label="Speed Axis X (mm/s)", color="blue")
             # axs[0,0].scatter(t, velocity_profile, color='orange', s=10)  # Aggiungi i punti campionati
-            axs[0, 0].plot(M2_TrajectoryTime, Y_Trajectory, label="Velocità Asse Y (mm/s)", color="green")
+            axs[0, 0].plot(M2_TrajectoryTime, Y_Trajectory, label="Speed Axis Y (mm/s)", color="green")
             # axs[0,0].scatter(M2_TrajectoryTime, Y_Trajectory, color='yellow', s=10)  # Aggiungi i punti campionati
-            axs[0, 0].set_title("Profilo di Velocità")
-            axs[0, 0].set_xlabel("Tempo (s)")
-            axs[0, 0].set_ylabel("Velocità (mm/s)")
+            axs[0, 0].set_title("Speed Profile")
+            axs[0, 0].set_xlabel("Time (s)")
+            axs[0, 0].set_ylabel("Speed (mm/s)")
             axs[0, 0].grid(True)
             axs[0, 0].legend()
 
             # Grafico 2: Profilo di velocità e accelerazione
-            axs[0, 1].plot(TimeAlghorytmics, SpeedAlghorytmics, label='Velocità Asse X (mm/s)', color=colorAxis)
-            axs[0, 1].plot(TimeTraj, SpeedTraj, label='Velocità Asse Y (mm/s)', color=colorAxis1)
+            axs[0, 1].plot(TimeAlghorytmics, SpeedAlghorytmics, label='Speed Axis X (mm/s)', color=colorAxis)
+            axs[0, 1].plot(TimeTraj, SpeedTraj, label='Speed Axis Y (mm/s)', color=colorAxis1)
             axs[0, 1].axhline(y=MaxSpeed_Flag, color='red', linestyle='--',
-                              label=f'Velocità Massima: {MaxSpeed_Flag:.2f} mm/s')
+                              label=f'Max Speed: {MaxSpeed_Flag:.2f} mm/s')
             # axs[0, 1].axvline(x=acceleration_Eq, color='green', linestyle='--', label='Fine accelerazione')
             # axs[0, 1].axvline(x=best_t_accAlgho + best_time_const, color='orange', linestyle='--', label='Fine velocità costante')
-            axs[0, 1].axvline(x=TimeTrajectory, color='purple', linestyle='--', label='Fine movimento')
-            axs[0, 1].set_title('Profilo di Velocità e Accelerazione')
-            axs[0, 1].set_xlabel('Tempo (s)')
-            axs[0, 1].set_ylabel('Velocità (mm/s)')
+            axs[0, 1].axvline(x=TimeTrajectory, color='purple', linestyle='--', label='End Trajectory')
+            axs[0, 1].set_title('Acceleration and Speed Profile')
+            axs[0, 1].set_xlabel('Time (s)')
+            axs[0, 1].set_ylabel('Speed (mm/s)')
             axs[0, 1].legend()
             axs[0, 1].grid(True)
 
@@ -748,12 +708,12 @@ class ProfileGenerator:  #int
             # Interpolazione della traiettoria su un piano X-Y
             axs3.plot(TimeX, PositionXAxis, 'b', label="Interpolated Trajectory Axis X")
             axs3.plot(TimeY, PositionYAxis, 'g', label="Interpolated Trajectory Axis Y")
-            axs3_1.plot(position_M1_interpolated, position_M2_interpolated, 'r-', label="Traiettoria Interpolata")
+            axs3_1.plot(position_M1_interpolated, position_M2_interpolated, 'r-', label="Trajectory Interpolated")
 
             # axs[1, 0].scatter(position_M1_interpolated, position_M2_interpolated, color='blue', marker='o', label='Punti Campionati')  # Grafico a dispersione
-            axs[1, 0].set_title("Interpolazione Traiettoria X-Y")
-            axs[1, 0].set_xlabel("Posizione Asse X (mm)")
-            axs[1, 0].set_ylabel("Posizione Asse Y (mm)")
+            axs[1, 0].set_title("Trajectory Interpolated X-Y")
+            axs[1, 0].set_xlabel("Position Axis X (mm)")
+            axs[1, 0].set_ylabel("Position Axis Y (mm)")
             # axs[1,0].set_xlim(-460, 460)  # Limite massimo dell'asse X
             # axs[1,0].set_ylim(-600, 600)  # Limite massimo dell'asse Y
 
@@ -765,20 +725,19 @@ class ProfileGenerator:  #int
             ax4_1.axis('off')
 
             ax4_1.text(0, 0.0,
-                    (   f'                                 DINAMICHE UTILIZZATE:    \n\n'
-                        f'- Speed Max Axis X (demand): {self.M1_MaxSpeed} mm/s\n'
-                        f'- Max Acceleration Axis X(demand): {self.M1_Acc_Dec} mm/s²\n'
-                        f'- Speed Max Axis Y(demand): {self.M2_MaxSpeed} mm/s\n'
-                        f'- Max Acceleration Axis Y(demand): {self.M2_Acc_Dec} mm/s²\n'
-                        f'- Time Trajectory Axis X: {round(M1_TrajectoryTotalTime, 3)} s\n'
-                        f'- Time Trajectory Axis Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
-                        f'- Corsa Asse X: {X} mm\n'
-                        f'- Corsa Asse Y: {Y} mm\n'
-                        f'- Asse Ricalcolato:  {AxisRecalculate}\n'
+                    (   f'                                 DYNAMICS USED:   \n\n'
+                        f'- SPEED MAX AXIS X (demand): {self.M1_MaxSpeed} mm/s\n'
+                        f'- MAX ACCELERATION AXIS X  (demand): {self.M1_Acc_Dec} mm/s²\n'
+                        f'- SPEED MAX AXIS Y (demand): {self.M2_MaxSpeed} mm/s\n'
+                        f'- MAX ACCELERATION AXIS Y (demand): {self.M2_Acc_Dec} mm/s²\n'
+                        f'- TIME TRAJECTORY AXIS X: {round(M1_TrajectoryTotalTime, 3)} s\n'
+                        f'- TIME TRAJECTORY AXIS Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
+                        f'- STROKE AXIS X: {X} mm\n'
+                        f'- STROKE AXIS Y: {Y} mm\n'
+                        f'- AXIS RICALCULATED:  {AxisRecalculate}\n'
                         f'- \n'),
                     fontsize=8, color='black')
 
-            # Sotto-riquadro 2: Informazioni Parte 2
             ax4_2 = fig.add_subplot(gs_bottom_right[0, 0])
             ax4_2.axis('off')
 
@@ -786,12 +745,12 @@ class ProfileGenerator:  #int
                     (f' '
                         f' \n'
                         f' \n'
-                        f'- Speed Max Axis X : {round(MaxSpeedXAxis, 2)} mm/s\n'
-                        f'- Max Acceleration Axis X: {round(AccAxisX, 2)} mm/s²\n'
-                        f'- Speed Max Axis Y: {round(MaxSpeedYAxis, 3)} mm/s\n'
-                        f'- Max Acceleration Axis Y: {round(AccAxisY, 3)} mm/s²\n'
-                        f'- Time Accelerazione Asse X: {round(M1_AccTime, 3)} s\n'
-                        f'- Time Accelerazione Asse Y: {round(M2_AccTime, 3)} s\n'
+                        f'- SPEED MAX AXIS X : {round(MaxSpeedXAxis, 2)} mm/s\n'
+                        f'- MAX ACCELERATION AXIS X: {round(AccAxisX, 2)} mm/s²\n'
+                        f'- SPEED MAX AXIS Y: {round(MaxSpeedYAxis, 3)} mm/s\n'
+                        f'- MAX ACCELERATION AXIS Y: {round(AccAxisY, 3)} mm/s²\n'
+                        f'- ACCELERATION TIME AXIS X: {round(M1_AccTime, 3)} s\n'
+                        f'- ACCELERATION TIME AXIS Y: {round(M2_AccTime, 3)} s\n'
                         f'- \n'),
                     fontsize=8, color='black')
 
@@ -799,7 +758,6 @@ class ProfileGenerator:  #int
             axs[1, 0].legend()
             plt.grid(True)
 
-            # Mostra entrambi i grafici
             plt.tight_layout()
             plt.show()
         return  round(MaxSpeedXAxis, 2), round(AccAxisX, 2), round(MaxSpeedYAxis, 3), round(AccAxisY, 3), PositionXAxis, PositionYAxis, TimeX, TimeY
