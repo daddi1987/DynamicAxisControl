@@ -3,6 +3,7 @@
 ![](https://img.shields.io/github/release/MotorControl/editor.md.svg) 
 ![](https://img.shields.io/github/issues/MotorControl/editor.md.svg)
 ![](https://img.shields.io/badge/Python-3.7-blue)
+![](https://img.shields.io/badge/Python-3.10-blue)
 
 # Dynamic-Axis-Control
 Linear trajectory generator for robotic axes, with the ability to synchronize up to two speed profiles, to maximize performance. Also perfect for calculating the trajectories of the CoreXY Axes.
@@ -85,7 +86,8 @@ VelX,AccX,VelY,AccY,TjX,TjY,TmX, TmY, M1_position,M2_position, M1Block,M2Block =
                           YSim[i], 
                           Graph=True)
 ```
-[SyncCoreXYAxis]: https://github.com/daddi1987/Dynamic-Axis-Control/tree/FirstDevel/Doc/Image/SyncCoreXYAxisExample.png "Example Result CoreXY Sync"
+
+![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/tree/FirstDevel/Doc/Image/SyncCoreXYAxisExample.jpg?raw=true)
 
 
 ## Analysis
