@@ -57,6 +57,12 @@ class ProfileGenerator:  #int
 
 
     def SyncCoreXYAxis(self, Xstart, Ystart, X, Y, Graph=True):
+        """
+        The function synchronizes the speed of two motors to move a Core XY type Cartesian axis.
+        The algorithm synchronizes the trajectories of two motors to determine their acceleration and deceleration times. The trajectories will so be executed diagonally.
+
+        Synchronization necessitates slowing down the shortest axis to end at the same time as the first.
+        """
 
         print("Generate Sync for CORE XY")
 
@@ -1072,8 +1078,8 @@ if __name__ == "__main__":
         if M1Block == False or M2Block == False:
             generator.AxisSimulator2D(TjX, TjY, TmX, TmY, 100, AxisType="CoreXY")
         i=i+1
-        #print("Posizione Motore 1: ",M1_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
-        #print("Posizione Motore 2: ",M2_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
+        print("Posizione Motore 1: ",M1_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
+        print("Posizione Motore 2: ",M2_position)   # DA TOGLIERE QUANDO SI LAVORA CON IL LINEARE
         print("Speed X Axis: ", VelX)
         print("Acc/Dec X Axis: ", AccX)
         print("Speed Y Axis: ", VelY)
