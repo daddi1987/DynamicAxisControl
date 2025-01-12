@@ -87,7 +87,7 @@ VelX,AccX,VelY,AccY,TjX,TjY,TmX, TmY, M1_position,M2_position, M1Block,M2Block =
                           Graph=True)
 ```
 
-![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/tree/FirstDevel/Doc/Image/SyncCoreXYAxisExample.jpg?raw=true)
+![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/607064f324aed078c0ad9eb78ea98cf64589ca8f/Doc/Image/SyncCoreXYAxisExample.jpg)
 
 
 ## Analysis
