@@ -356,7 +356,7 @@ class ProfileGenerator:  # int
             M1_Block = True
             M2_Block = True
 
-        return round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY,3), PositionXAxis, PositionYAxis, TimeX, TimeY, int(M1_revToSend), int(M2_revToSend), M1_Block, M2_Block, M1_AccTime, M2_AccTime
+        return round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY,3), PositionXAxis, PositionYAxis, TimeX, TimeY, int(M1_revToSend), int(M2_revToSend), M1_Block, M2_Block, M1_AccTime, M2_AccTime, SpeedAlghorytmics,TimeAlghorytmics, SpeedTraj, TimeTraj
                                                                                                        
             
 
@@ -882,8 +882,6 @@ class ProfileGenerator:  # int
                 else:
                     velocity_profile_M2[iM2] = v_max_reached_M2 - AccDec_M2 * (time_M2 - M2_AccTime - t_const_M2)
 
-        
-
         print("trajectory time X:", StrokeTotalTime_M1)
         print("trajectory time Y:", StrokeTotalTime_M2)
 
@@ -1067,8 +1065,8 @@ if __name__ == "__main__":
     # Example Paramiters
     generator = ProfileGenerator(2.0, 0.5, 2.0, 0.5, 38, 1000)
 
-    XSim = [0, 14.494521975789633, 100, 250, 10, 300, 250]
-    YSim = [0, 4.378902824021646, 100, 526, 10, 30, 350]
+    XSim = [0, 200, 100, 250, 10, 300, 250]
+    YSim = [0, 200, 100, 526, 10, 30, 350]
 
     i = 1
     while i != 7:
