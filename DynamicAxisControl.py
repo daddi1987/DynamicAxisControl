@@ -831,6 +831,10 @@ class ProfileGenerator:  # int
 
             StrokeTotalTime_M1 = 2 * (Stroke_M1 / AccDec_M1) ** 0.5
             v_max_reached_M1 = (Stroke_M1 * AccDec_M1) ** 0.5
+
+            if M1_AccTime > StrokeTotalTime_M1:
+                M1_AccTime = M1_AccTime / 2
+
         else:
 
             d_const_M1 = Stroke_M1 - (2 * StrokeAccDec_M1)
@@ -848,6 +852,9 @@ class ProfileGenerator:  # int
             t_const_M2 = d_const_M2 / MaxSpeed_M2_mm
             StrokeTotalTime_M2 = 2 * M2_AccTime + t_const_M2
             v_max_reached_M2 = MaxSpeed_M2_mm
+
+            if M2_AccTime > StrokeTotalTime_M1:
+                M1_AccTime = M1_AccTime / 2
 
         t = np.linspace(0, StrokeTotalTime_M1, 1000)
         velocity_profile = np.zeros_like(t)
@@ -1067,8 +1074,8 @@ if __name__ == "__main__":
     # Example Paramiters
     generator = ProfileGenerator(2.0, 0.5, 2.0, 0.5, 38, 1000)
 
-    XSim = [0, 14.494521975789633, 100, 250, 10, 300, 250]
-    YSim = [0, 4.378902824021646, 100, 526, 10, 30, 350]
+    XSim = [0, 3.303968124767493, 100, 250, 10, 300, 250]
+    YSim = [0, 9.120715669979212, 100, 526, 10, 30, 350]
 
     i = 1
     while i != 7:

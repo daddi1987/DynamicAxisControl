@@ -78,6 +78,7 @@ while True:
         print("INCORRECT SYNC TOTAL TIME TARGET")
         print("------------ERROR-----------------")
 
+        '''
         fig, axs = plt.subplots(2, 2, figsize=(12, 10))
 
         axs[0, 0].plot(TmX,TJM1, label="Speed Axis X (mm/s)", color="blue")
@@ -89,6 +90,7 @@ while True:
         axs[0, 0].legend()
         plt.grid(True)
         plt.show()
+        '''
 
         break
     i+=1
