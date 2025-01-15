@@ -826,11 +826,14 @@ class ProfileGenerator:  # int
 
         t_const = 0
         t_const_M2 = 0
-
+        M1_Triangle = False
+        M2_Triangle = False
         if Stroke_M1 < 2 * StrokeAccDec_M1:
 
             StrokeTotalTime_M1 = 2 * (Stroke_M1 / AccDec_M1) ** 0.5
             v_max_reached_M1 = (Stroke_M1 * AccDec_M1) ** 0.5
+            M1_Triangle = True
+            print("DENTRO IL TRIANGOLO")
 
          #   if M1_AccTime > StrokeTotalTime_M1:
          #       M1_AccTime = StrokeTotalTime_M1 / 2
@@ -846,12 +849,22 @@ class ProfileGenerator:  # int
 
             StrokeTotalTime_M2 = 2 * (Stroke_M2 / AccDec_M2) ** 0.5
             v_max_reached_M2 = (Stroke_M2 * AccDec_M2) ** 0.5
+            M2_Triangle = True
+            print("DENTRO IL TRIANGOLO______________________________________________________")
         else:
 
             d_const_M2 = Stroke_M2 - 2 * StrokeAccDec_M2
             t_const_M2 = d_const_M2 / MaxSpeed_M2_mm
             StrokeTotalTime_M2 = 2 * M2_AccTime + t_const_M2
             v_max_reached_M2 = MaxSpeed_M2_mm
+
+        if (M2_Triangle == True) and (M1_Triangle == True):
+            print("DOPPIO TRIANGOLO")
+            StrokeTotalTime_M1 = round(StrokeTotalTime_M1,4)
+            StrokeTotalTime_M2 = round(StrokeTotalTime_M2,4)
+            if StrokeTotalTime_M1 != StrokeTotalTime_M2:
+                print("************************TEMPO TOTALE DELLA TRAIETTORIA NON RISPETTATO****************************")
+
 
          #   if M2_AccTime > StrokeTotalTime_M2:
          #       M2_AccTime = StrokeTotalTime_M2 / 2

@@ -55,28 +55,19 @@ while True:
         if M1_AccT == M2_AccT:
             print("SYNC ACCELERATION PHASE DONE")
             print("TRAIETTORIE ESEGUITE: ", i)
+            print("M1 and M2 Different TIME: ", M1_Time_Trajectory-M2_Time_Trajectory)
             print("-----------DONE--------------")
         else:
             print("INCORRECT SYNC ACCELERATION PHASE")
             print("------------ERROR-----------------")
-
-            fig, axs = plt.subplots(2, 2, figsize=(12, 10))
-
-            axs[0, 0].plot(TM1, TJM1, label="Speed Axis X (mm/s)", color="blue")
-            axs[0, 0].plot(TM2, TJM2, label="Speed Axis Y (mm/s)", color="green")
-            axs[0, 0].set_title("Speed Profile")
-            axs[0, 0].set_xlabel("Time (s)")
-            axs[0, 0].set_ylabel("Speed (mm/s)")
-            axs[0, 0].grid(True)
-            axs[0, 0].legend()
-            plt.grid(True)
-            plt.show()
-
             break
 
     else:
         print("INCORRECT SYNC TOTAL TIME TARGET")
         print("------------ERROR-----------------")
+        print("Trajectory M1 TIME: ", M1_Time_Trajectory)
+        print("Trajectory M2 TIME: ", M2_Time_Trajectory)
+        print("M1 and M2 Different TIME: ", M1_Time_Trajectory-M2_Time_Trajectory)
 
         '''
         fig, axs = plt.subplots(2, 2, figsize=(12, 10))
