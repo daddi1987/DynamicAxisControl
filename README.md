@@ -91,7 +91,7 @@ VelX,AccX,VelY,AccY,TjX,TjY,TmX, TmY, M1_position,M2_position, M1Block,M2Block =
                           Graph=True)
 ```
 
-![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/ac4ac86b169795838e1d1992add20e23bfd0906f/Doc/Image/SyncLinearAxes.png)
+![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/5d33d5cd59b4b4e3d56927d32d1eee9e3e7e88b4/Doc/Image/SyncCoreXYAxisExample.jpg)
 
 ##### __SyncLinearAxes__ 
 > The function synchronizes the speed of two motors to move a two axes type Cartesian.
