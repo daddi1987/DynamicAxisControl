@@ -91,7 +91,7 @@ VelX,AccX,VelY,AccY,TjX,TjY,TmX, TmY, M1_position,M2_position, M1Block,M2Block =
                           Graph=True)
 ```
 
-![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/607064f324aed078c0ad9eb78ea98cf64589ca8f/Doc/Image/SyncCoreXYAxisExample.jpg)
+![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/ac4ac86b169795838e1d1992add20e23bfd0906f/Doc/Image/SyncLinearAxes.png)
 
 ##### __SyncLinearAxes__ 
 > The function synchronizes the speed of two motors to move a two axes type Cartesian.
@@ -124,7 +124,8 @@ __Example__
 ```
 VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
 ```
-![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/607064f324aed078c0ad9eb78ea98cf64589ca8f/Doc/Image/SyncCoreXYAxisExample.jpg)
+![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/ac4ac86b169795838e1d1992add20e23bfd0906f/Doc/Image/RealTime%20Animation.png)
+
 
 ##### __RealTimeAnimation__ 
 > This function used for simulation trajectory.
