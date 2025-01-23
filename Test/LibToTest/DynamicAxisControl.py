@@ -358,7 +358,6 @@ class ProfileGenerator:  # int
 
         return round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY,3), PositionXAxis, PositionYAxis, TimeX, TimeY, int(M1_revToSend), int(M2_revToSend), M1_Block, M2_Block, M1_AccTime, M2_AccTime, SpeedAlghorytmics,TimeAlghorytmics, SpeedTraj, TimeTraj
                                                                                                        
-            
 
     def SyncLinearAxes(self, Xstart, Ystart, X, Y, Graph=True):
 
@@ -574,8 +573,8 @@ class ProfileGenerator:  # int
 
             plt.tight_layout()
             plt.show()
-        return round(Rev_MaxSpeedXAxis, 4), round(Rev_AccAxisX, 4), round(Rev_MaxSpeedYAxis, 4), round(Rev_AccAxisY,4), PositionXAxis, PositionYAxis, TimeX, TimeY
-                                                                                                       
+        return round(Rev_MaxSpeedXAxis, 4), round(Rev_AccAxisX, 4), round(Rev_MaxSpeedYAxis, 4), round(Rev_AccAxisY,4), PositionXAxis, PositionYAxis, TimeX, TimeY, M1_AccTime, M2_AccTime, SpeedAlghorytmics,TimeAlghorytmics, SpeedTraj, TimeTraj
+
 
     def LinearMotion(self, Xstart, Ystart, X, Y, Graph=True):
 
@@ -781,6 +780,8 @@ class ProfileGenerator:  # int
             plt.show()
         return round(MaxSpeedXAxis, 2), round(AccAxisX, 2), round(MaxSpeedYAxis, 3), round(AccAxisY,
                                                                                            3), PositionXAxis, PositionYAxis, TimeX, TimeY
+
+        
 
     def calculate_theta(self, X, Y, Xstart, Ystart):
 

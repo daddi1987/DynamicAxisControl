@@ -1074,14 +1074,16 @@ if __name__ == "__main__":
     # Example Paramiters
     generator = ProfileGenerator(2.0, 0.5, 2.0, 0.5, 38, 1000)
 
-    XSim = [0, 33.40202984807707, 100, 250, 10, 300, 250]
-    YSim = [0, 32.81315934428243, 100, 526, 10, 30, 350]
+    XSim = [0, 275.8642545524491, 100, 250, 10, 300, 250]
+    YSim = [0, 8.036328974316481, 100, 526, 10, 30, 350]
 
     i = 1
     while i != 7:
-        VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY, M1_position, M2_position, M1Block, M2Block = generator.SyncCoreXYAxis(
-            XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
-        # VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+
+        #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY, M1_position, M2_position, M1Block, M2Block = generator.SyncCoreXYAxis(XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
+            
+        VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
+        
         # VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.LinearMotion(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
         if M1Block == False or M2Block == False:
             generator.AxisSimulator2D(TjX, TjY, TmX, TmY, 100, AxisType="CoreXY")

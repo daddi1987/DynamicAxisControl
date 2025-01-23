@@ -1,7 +1,11 @@
-![](https://img.shields.io/github/stars/daddi7987/editor.md.svg) 
-![](https://img.shields.io/github/v/tag/daddi7987/MotorControl)
-![](https://img.shields.io/github/release/MotorControl/editor.md.svg) 
-![](https://img.shields.io/github/issues/MotorControl/editor.md.svg)
+![](https://img.shields.io/github/stars/daddi1987/Dynamic-Axis-Control
+) 
+![](https://img.shields.io/github/v/tag/daddi1987/Dynamic-Axis-Control
+)
+![](https://img.shields.io/github/v/release/daddi1987/Dynamic-Axis-Control
+) 
+![](https://img.shields.io/github/issues/daddi1987/Dynamic-Axis-Control
+)
 ![](https://img.shields.io/badge/Python-3.7-blue)
 ![](https://img.shields.io/badge/Python-3.10-blue)
 
@@ -89,6 +93,59 @@ VelX,AccX,VelY,AccY,TjX,TjY,TmX, TmY, M1_position,M2_position, M1Block,M2Block =
 
 ![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/607064f324aed078c0ad9eb78ea98cf64589ca8f/Doc/Image/SyncCoreXYAxisExample.jpg)
 
+##### __SyncLinearAxes__ 
+> The function synchronizes the speed of two motors to move a two axes type Cartesian.
+        The algorithm synchronizes the trajectories of two motors to determine their acceleration and deceleration times. The trajectories will so be executed diagonally.
+        Synchronization necessitates slowing down the shortest axis to end at the same time as the first.
+
+__INPUT:__
+| VARIABLE | DESCRIPTION | TYPE |
+| :---         |     :---:      |          ---: |
+| Xstart   | Value Axis to start Trajectory X Axis     | FLOAT    |
+| Ystart   | Value Axis to start Trajectory Y Axis      | FLOAT     |
+| X   | X Axis  Position Value End Trajectory (Absolute Movement)     | FLOAT    |
+| Y   | Y Axis Position Value End Trajectory (Absolute Movement)     | FLOAT     |
+| GRAPH   | Show Trajectory     | BOOL     |
+
+__OUTPUT:__
+| VARIABLE | DESCRIPTION | TYPE |
+| :---         |     :---:      |          ---: |
+| Rev_MaxSpeedXAxis   | Max Speed M1 Motor value {round at .00}    | FLOAT    |
+| Rev_AccAxisX   | Max Acceleration and Deceleration M1 Motor value {round at .00}     | FLOAT     |
+| Rev_MaxSpeedYAxis   | Max Speed M2 Motor value {round at .00}     | FLOAT    |
+| Rev_AccAxisY   | Max Acceleration and Deceleration M2 Motor value {round at .00}       | FLOAT     |
+| PositionXAxis   | M1 Kinematic position values  {Trajectory Profile}    | ARRAY     |
+| PositionYAxis   | M2 Kinematic position values  {Trajectory Profile}    | ARRAY     |
+| TimeX   | M1 Kinematic Time values  {Time Profile}    | ARRAY     |
+| TimeY   | M2 Kinematic Time values  {Time Profile}    | ARRAY     |
+
+__Example__
+
+```
+VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
+```
+![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/607064f324aed078c0ad9eb78ea98cf64589ca8f/Doc/Image/SyncCoreXYAxisExample.jpg)
+
+##### __RealTimeAnimation__ 
+> This function used for simulation trajectory.
+
+__INPUT:__
+| VARIABLE | DESCRIPTION | TYPE |
+| :---         |     :---:      |          ---: |
+| TjX   | Trajectory X Axis     | TUPLA    |
+| TjY   | Trajectory Y Axis         | TUPLA     |
+| TmX   | Point Time Trajectory Axis X     | TUPLA    |
+| TmY   | Point Time Trajectory Axis Y     | TUPLA    |
+| MaxStroke Chart   | MaxStroke Chart     | FLOAT     |
+| AxisType   | Type of Axis Use  | STRING     |
+
+__Example__
+
+```
+generator.AxisSimulator2D(TjX, TjY, TmX, TmY, 100, AxisType="CoreXY")
+```
+
+![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/607064f324aed078c0ad9eb78ea98cf64589ca8f/Doc/Image/SyncCoreXYAxisExample.jpg)
 
 ## Analysis
 ### Features:
