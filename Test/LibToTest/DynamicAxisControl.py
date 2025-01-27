@@ -169,7 +169,7 @@ class ProfileGenerator:  # int
                                                                                    TimeXAxis)  # Syncronized the Acc/Dec Phase
                 t_acc, t_const, t_dec, total_time, TimeAlghorytmics, SpeedAlghorytmics = self.SingleTrajectoryGenerator(
                     AxisStroke, max_speed_Y_new, acc_Y_new)  # Ricalculate the Y axis acceleration and speed
-
+                M2_AccTime = t_acc
                 MaxSpeed_Flag = max_speed_Y_new
                 AccAxisY = acc_Y_new
                 MaxSpeedYAxis = max_speed_Y_new
@@ -205,13 +205,13 @@ class ProfileGenerator:  # int
                 AccAxisY = M2_Acc_Dec
                 MaxSpeedYAxis = M2_MaxSpeed
                 MaxTimeAxis = TimeYAxis
-                TimeAccY = M1_AccTime
+                TimeAccY = M2_AccTime
                 # --------------------RICALCULATE SINGLE TRAJECTORY PROFILE'-------------------------#
                 acc_X_new, max_speed_X_new = self.calculate_trajectoryAccPhaseSync(TimeAccY, PositionXAxis,
                                                                                    TimeYAxis)  # Syncronized the Acc/Dec Phase
                 t_acc, t_const, t_dec, total_time, TimeAlghorytmics, SpeedAlghorytmics = self.SingleTrajectoryGenerator(
                     AxisStroke, max_speed_X_new, acc_X_new)  # Ricalculate the Y axis acceleration and speed
-
+                M1_AccTime = t_acc
                 MaxSpeed_Flag = max_speed_X_new
                 AccAxisX = acc_X_new
                 MaxSpeedXAxis = max_speed_X_new
@@ -1091,8 +1091,8 @@ if __name__ == "__main__":
     # Example Paramiters
     generator = ProfileGenerator(2.0, 0.5, 2.0, 0.5, 38, 1000)
 
-    XSim = [0, 10.999296303752788, 100, 250, 10, 300, 250]
-    YSim = [0, 0.015473074909530437, 100, 526, 10, 30, 350]
+    XSim = [0, 395.73109688374814, 100, 250, 10, 300, 250]
+    YSim = [0, 300.3663158920367, 100, 526, 10, 30, 350]
 
     i = 1
     while i != 7:

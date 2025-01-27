@@ -169,7 +169,7 @@ class ProfileGenerator:  # int
                                                                                    TimeXAxis)  # Syncronized the Acc/Dec Phase
                 t_acc, t_const, t_dec, total_time, TimeAlghorytmics, SpeedAlghorytmics = self.SingleTrajectoryGenerator(
                     AxisStroke, max_speed_Y_new, acc_Y_new)  # Ricalculate the Y axis acceleration and speed
-
+                M2_AccTime = t_acc
                 MaxSpeed_Flag = max_speed_Y_new
                 AccAxisY = acc_Y_new
                 MaxSpeedYAxis = max_speed_Y_new
@@ -205,13 +205,13 @@ class ProfileGenerator:  # int
                 AccAxisY = M2_Acc_Dec
                 MaxSpeedYAxis = M2_MaxSpeed
                 MaxTimeAxis = TimeYAxis
-                TimeAccY = M1_AccTime
+                TimeAccY = M2_AccTime
                 # --------------------RICALCULATE SINGLE TRAJECTORY PROFILE'-------------------------#
                 acc_X_new, max_speed_X_new = self.calculate_trajectoryAccPhaseSync(TimeAccY, PositionXAxis,
                                                                                    TimeYAxis)  # Syncronized the Acc/Dec Phase
                 t_acc, t_const, t_dec, total_time, TimeAlghorytmics, SpeedAlghorytmics = self.SingleTrajectoryGenerator(
                     AxisStroke, max_speed_X_new, acc_X_new)  # Ricalculate the Y axis acceleration and speed
-
+                M1_AccTime = t_acc
                 MaxSpeed_Flag = max_speed_X_new
                 AccAxisX = acc_X_new
                 MaxSpeedXAxis = max_speed_X_new
@@ -429,6 +429,7 @@ class ProfileGenerator:  # int
             acc_Y_new, max_speed_Y_new = self.calculate_trajectoryAccPhaseSync(TimeAccX, PositionYAxis, TimeXAxis)
             t_acc, t_const, t_dec, total_time, TimeAlghorytmics, SpeedAlghorytmics = self.SingleTrajectoryGenerator(
                 AxisStroke, max_speed_Y_new, acc_Y_new)
+            TimeAccY = t_acc
             M2_AccTime = t_acc
             MaxSpeed_Flag = max_speed_Y_new
             AccAxisY = acc_Y_new
@@ -1078,15 +1079,15 @@ if __name__ == "__main__":
     # Example Paramiters
     generator = ProfileGenerator(2.0, 0.5, 2.0, 0.5, 38, 1000)
 
-    XSim = [0, 613.58438492030797 , 100, 250, 10, 300, 250]
-    YSim = [0, 0.018438492030797 , 100, 526, 10, 30, 350]
+    XSim = [0, 200 , 100, 250, 10, 300, 250]
+    YSim = [0, 200 , 100, 526, 10, 30, 350]
 
     i = 1
     while i != 7:
 
-        #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY, M1_position, M2_position, M1Block, M2Block = generator.SyncCoreXYAxis(XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
+        VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY, M1_position, M2_position, M1Block, M2Block = generator.SyncCoreXYAxis(XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
             
-        VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
+        #elX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
         
         # VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.LinearMotion(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
         if M1Block == False or M2Block == False:
