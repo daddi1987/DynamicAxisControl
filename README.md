@@ -26,8 +26,50 @@ Linear trajectory generator for robotic axes, with the ability to synchronize up
 ## Documentation
 
 ### Requirements:
+asked to set a specific unit of measurement e.g.: (°, rad, metres, millimetres).
+The module requires the following dependencies:
+> 
+*	matplotlib
+*	random
+*	numpy
+*	time
+
+The tested python systems are
+![](https://img.shields.io/badge/Python-3.7-blue)
+![](https://img.shields.io/badge/Python-3.10-blue)
 
 ### Specification:
+Description of The Function of Sync core X and Y axes:
+```flow
+st=>start: Start
+e=>end
+op1=>operation: Convert mm 
+to revolution
+sub1=>subroutine: My Subroutine
+cond=>condition: The X axis is the 
+longest stroke
+io=>inputoutput: Recalculate 
+the Y Axis
+speed profile
+para=>operation: Recalculate 
+the X Axis
+
+in=>input: some in
+out=>output: some out
+para1=>operation: Sync Speed and Acc/Dec
+in=>input: some in
+out=>output: some out
+
+para2=>operation: Sync Speed and Acc/Dec
+in=>input: some in
+out=>output: some out
+
+st->op1->cond
+cond(yes)->io->para1->e
+cond(no)->para->para2->e 
+```
+The linear Axes Function use the same algorithmic without the convert from unit to revolution unit motor.
+
 #### Functions:
 ---
 ##### __ProfileGenerator:__
@@ -148,5 +190,9 @@ generator.AxisSimulator2D(TjX, TjY, TmX, TmY, 100, AxisType="CoreXY")
 ![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/ac4ac86b169795838e1d1992add20e23bfd0906f/Doc/Image/RealTime%20Animation.png)
 
 ## Analysis
+
 ### Features:
+- [ ] Add some circular interpolation to get the simple G-Code command
+- [ ] Export profile for the 3d Animation Studio
 ### Bug:
+	Luckily no one yet :-)
