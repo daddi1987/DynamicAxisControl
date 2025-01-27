@@ -40,33 +40,14 @@ The tested python systems are
 
 ### Specification:
 Description of The Function of Sync core X and Y axes:
-```flow
-st=>start: Start
-e=>end
-op1=>operation: Convert mm 
-to revolution
-sub1=>subroutine: My Subroutine
-cond=>condition: The X axis is the 
-longest stroke
-io=>inputoutput: Recalculate 
-the Y Axis
-speed profile
-para=>operation: Recalculate 
-the X Axis
+Here is a simple flow chart:
 
-in=>input: some in
-out=>output: some out
-para1=>operation: Sync Speed and Acc/Dec
-in=>input: some in
-out=>output: some out
-
-para2=>operation: Sync Speed and Acc/Dec
-in=>input: some in
-out=>output: some out
-
-st->op1->cond
-cond(yes)->io->para1->e
-cond(no)->para->para2->e 
+```mermaid
+graph TD;
+    A(Convert mm to revolution)-->B;
+    B(Check the axis with the longest travel)-->C;
+    C(Recalculate the axis with the shortest travel)-->D;
+    D(Sync Speed and Acc/Dec);
 ```
 The linear Axes Function use the same algorithmic without the convert from unit to revolution unit motor.
 
@@ -166,7 +147,7 @@ __Example__
 ```
 VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
 ```
-![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/607064f324aed078c0ad9eb78ea98cf64589ca8f/Doc/Image/SyncCoreXYAxisExample.jpg)
+![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/607064f324aed078c0ad9eb78ea98cf64589ca8f/Doc/Image/SyncLinearAxes.jpg)
 
 ##### __RealTimeAnimation__ 
 > This function used for simulation trajectory.
