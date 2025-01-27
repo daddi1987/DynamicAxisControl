@@ -57,7 +57,7 @@ The linear Axes Function use the same algorithmic without the convert from unit 
 ---
 ##### __ProfileGenerator:__
 > 
-    Initializes the parameters for motion profile generation.
+    generator = ProfileGenerator(2.0, 0.5, 2.0, 0.5, 38, 1000)
            
 | VARIABLE | DESCRIPTION | TYPE |
 | :---         |     :---:      |          ---: |
