@@ -147,7 +147,7 @@ __Example__
 ```
 VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
 ```
-![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/607064f324aed078c0ad9eb78ea98cf64589ca8f/Doc/Image/SyncLinearAxes.jpg)
+![SyncCoreXYAxis](https://github.com/daddi1987/Dynamic-Axis-Control/blob/5d33d5cd59b4b4e3d56927d32d1eee9e3e7e88b4/Doc/Image/SyncLinearAxes.png)
 
 ##### __RealTimeAnimation__ 
 > This function used for simulation trajectory.
