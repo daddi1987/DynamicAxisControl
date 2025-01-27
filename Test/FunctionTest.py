@@ -44,8 +44,8 @@ while True:
     
     M1_Time_Trajectory = round(max(TmX),10)   #M1 Time Trajectory
     M2_Time_Trajectory = round(max(TmY), 10)  #M2 Time Trajectory
-    M1_AccT = M1_AccTime # M1 Acceleration Time
-    M2_AccT = M2_AccTime # M2 Acceleration Time
+    M1_AccT = round(M1_AccTime,6) # M1 Acceleration Time
+    M2_AccT = round(M2_AccTime,6) # M2 Acceleration Time
 
     print("CHECK TRAJECTORY.................")
     print(X_DemandPosition)
@@ -64,6 +64,9 @@ while True:
             print("")
         else:
             print("INCORRECT SYNC ACCELERATION PHASE")
+            print("Trajectory M1 ACCELERATION TIME: ", M1_AccT)
+            print("Trajectory M2 ACCELERATION TIME: ", M2_AccT)
+            print("M1 and M2 Different ACC TIME: ", M1_AccT - M2_AccT)
             print("------------ERROR-----------------")
             break
 

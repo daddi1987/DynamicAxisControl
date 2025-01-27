@@ -428,6 +428,7 @@ class ProfileGenerator:  # int
             acc_Y_new, max_speed_Y_new = self.calculate_trajectoryAccPhaseSync(TimeAccX, PositionYAxis, TimeXAxis)
             t_acc, t_const, t_dec, total_time, TimeAlghorytmics, SpeedAlghorytmics = self.SingleTrajectoryGenerator(
                 AxisStroke, max_speed_Y_new, acc_Y_new)
+            M2_AccTime = t_acc
             MaxSpeed_Flag = max_speed_Y_new
             AccAxisY = acc_Y_new
             MaxSpeedYAxis = max_speed_Y_new
@@ -442,11 +443,12 @@ class ProfileGenerator:  # int
             AccAxisY = self.M2_Acc_Dec * 1000
             MaxSpeedYAxis = self.M2_MaxSpeed * 1000
             MaxTimeAxis = TimeYAxis
-            TimeAccY = M1_AccTime
+            TimeAccY = M2_AccTime
             # --------------------RECALCULATE SPEED PROFILE-------------------------#
             acc_X_new, max_speed_X_new = self.calculate_trajectoryAccPhaseSync(TimeAccY, PositionXAxis, TimeYAxis)
             t_acc, t_const, t_dec, total_time, TimeAlghorytmics, SpeedAlghorytmics = self.SingleTrajectoryGenerator(
                 AxisStroke, max_speed_X_new, acc_X_new)
+            M1_AccTime = t_acc
             MaxSpeed_Flag = max_speed_X_new
             AccAxisX = acc_X_new
             MaxSpeedXAxis = max_speed_X_new
@@ -829,15 +831,14 @@ class ProfileGenerator:  # int
         t_const_M2 = 0
         M1_Triangle = False
         M2_Triangle = False
+
         if Stroke_M1 < 2 * StrokeAccDec_M1:
 
             StrokeTotalTime_M1 = 2 * (Stroke_M1 / AccDec_M1) ** 0.5
             v_max_reached_M1 = (Stroke_M1 * AccDec_M1) ** 0.5
-            M1_Triangle = True
-            print("DENTRO IL TRIANGOLO")
 
-         #   if M1_AccTime > StrokeTotalTime_M1:
-         #       M1_AccTime = StrokeTotalTime_M1 / 2
+            if (M1_AccTime*2) > StrokeTotalTime_M1:     # Check triangle profile
+                M1_AccTime = StrokeTotalTime_M1 / 2
 
         else:
 
@@ -852,6 +853,10 @@ class ProfileGenerator:  # int
             v_max_reached_M2 = (Stroke_M2 * AccDec_M2) ** 0.5
             M2_Triangle = True
             print("DENTRO IL TRIANGOLO______________________________________________________")
+
+            if (M2_AccTime*2) > StrokeTotalTime_M2:
+                M2_AccTime = StrokeTotalTime_M2 / 2
+
         else:
 
             d_const_M2 = Stroke_M2 - 2 * StrokeAccDec_M2
