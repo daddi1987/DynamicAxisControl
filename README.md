@@ -9,7 +9,7 @@
 ![](https://img.shields.io/badge/Python-3.7-blue)
 ![](https://img.shields.io/badge/Python-3.10-blue)
 
-<img src="https://github.com/daddi1987/Dynamic-Axis-Control/blob/5e2fc6388242020558d592423f78357df6a62b32/Doc/Image/Logo.png" width="150">
+<img src="https://github.com/daddi1987/Dynamic-Axis-Control/blob/32230af4494e58b7b14299537feffaa56afca7ec/Doc/Image/Logo.png" width="150">
 
 # Dynamic Axis Control
 Linear trajectory generator for robotic axes, with the ability to synchronize up to two speed profiles, to maximize performance. Also perfect for calculating the trajectories of the CoreXY Axes.
