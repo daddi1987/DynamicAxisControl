@@ -21,9 +21,11 @@ while True:
 
     generator = ProfileGenerator(2.0, 0.5, 2.0, 0.5, 38, 1000, 0.25)
 
-    VelX, AccX, VelY, AccY, _, _, TmX, TmY, M1_position, M2_position, _, _,M1_AccTime, M2_AccTime, TJM1, TM1, TJM2, TM2 = generator.SyncCoreXYAxis(0,0,RandomX,RandomY,Graph=False)
+    #VelX, AccX, VelY, AccY, _, _, TmX, TmY, M1_position, M2_position, _, _,M1_AccTime, M2_AccTime, TJM1, TM1, TJM2, TM2 = generator.SyncCoreXYAxis(0,0,RandomX,RandomY,Graph=False)
 
     #VelX, AccX, VelY, AccY, M1_position, M2_position, TmX, TmY, M1_AccTime, M2_AccTime,_,_,_,_ = generator.SyncLinearAxes(0,0,RandomX,RandomY,Graph=False)
+
+    generator.LinearMotion(0,0,RandomX,RandomY,Graph=False)
 
 
     X_DemandPosition = RandomX  # Target X Axis

@@ -780,8 +780,8 @@ class ProfileGenerator:  # int
 
             plt.tight_layout()
             plt.show()
-        return round(MaxSpeedXAxis, 2), round(AccAxisX, 2), round(MaxSpeedYAxis, 3), round(AccAxisY,
-                                                                                           3), PositionXAxis, PositionYAxis, TimeX, TimeY
+        return round(MaxSpeedXAxis, 2), round(AccAxisX, 2), round(MaxSpeedYAxis, 3), round(AccAxisY,3), PositionXAxis, PositionYAxis, TimeX, TimeY
+
 
         
 

@@ -356,8 +356,22 @@ class ProfileGenerator:  # int
             M1_Block = True
             M2_Block = True
 
-        return round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY,3), PositionXAxis, PositionYAxis, TimeX, TimeY, int(M1_revToSend), int(M2_revToSend), M1_Block, M2_Block, M1_AccTime, M2_AccTime
-                                                                                                       
+        return {
+            "M1_MaxSpeed_Revolution": round(Rev_MaxSpeedXAxis, 4),
+            "M1_Acc_Revolution": round(Rev_AccAxisX, 4),
+            "M2_MaxSpeed_Revolution": round(Rev_MaxSpeedYAxis, 4),
+            "M2_AxisYAcc_Revolution": round(Rev_AccAxisY, 4),
+            "M1_PositionTrajectory": PositionXAxis,
+            "M2_AxisPositionTrajectory": PositionYAxis,
+            "M1_AxisTimeTrajectory": TimeX,
+            "M2_AxisTimeTrajectory": TimeY,
+            "M1_PosValueToSand" : M1_revToSend,
+            "M2_PosValueToSand": M2_revToSend,
+            "M1_BlockMotor": M1_Block,
+            "M2_BlockMotor": M2_Block,
+            "M1_AccelerationTime": M1_AccTime,
+            "M2_AccelerationTime": M2_AccTime
+        }
             
 
     def SyncLinearAxes(self, Xstart, Ystart, X, Y, Graph=True):
@@ -577,7 +591,16 @@ class ProfileGenerator:  # int
 
             plt.tight_layout()
             plt.show()
-        return round(Rev_MaxSpeedXAxis, 4), round(Rev_AccAxisX, 4), round(Rev_MaxSpeedYAxis, 4), round(Rev_AccAxisY,4), PositionXAxis, PositionYAxis, TimeX, TimeY
+        return {
+                "AxisXMaxSpeed_Revolution": round(Rev_MaxSpeedXAxis, 4),
+                "AxisXAcc_Revolution": round(Rev_AccAxisX, 4),
+                "AxisYMaxSpeed_Revolution": round(Rev_MaxSpeedYAxis, 4),
+                "AxisYAcc_Revolution": round(Rev_AccAxisY,4),
+                "XAxisPositionTrajectory": PositionXAxis,
+                "YAxisPositionTrajectory": PositionYAxis,
+                "XAxisTimeTrajectory": TimeX,
+                "YAxisTimeTrajectory": TimeY,
+               }
                                                                                                        
 
     def LinearMotion(self, Xstart, Ystart, X, Y, Graph=True):
@@ -782,8 +805,16 @@ class ProfileGenerator:  # int
 
             plt.tight_layout()
             plt.show()
-        return round(MaxSpeedXAxis, 2), round(AccAxisX, 2), round(MaxSpeedYAxis, 3), round(AccAxisY,
-                                                                                           3), PositionXAxis, PositionYAxis, TimeX, TimeY
+        return   {
+                "AxisXMaxSpeed_Revolution": round(MaxSpeedXAxis, 4),
+                "AxisXAcc_Revolution": round(AccAxisX, 4),
+                "AxisYMaxSpeed_Revolution": round(MaxSpeedYAxis, 4),
+                "AxisYAcc_Revolution": round(AccAxisY,4),
+                "XAxisPositionTrajectory": PositionXAxis,
+                "YAxisPositionTrajectory": PositionYAxis,
+                "XAxisTimeTrajectory": TimeX,
+                "YAxisTimeTrajectory": TimeY
+                }
 
     def calculate_theta(self, X, Y, Xstart, Ystart):
 
@@ -1085,11 +1116,11 @@ if __name__ == "__main__":
     i = 1
     while i != 7:
 
-        VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY, M1_position, M2_position, M1Block, M2Block = generator.SyncCoreXYAxis(XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
+        #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY, M1_position, M2_position, M1Block, M2Block = generator.SyncCoreXYAxis(XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
             
-        #elX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
+        #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
         
-        # VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.LinearMotion(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+        #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.LinearMotion(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
         if M1Block == False or M2Block == False:
             generator.AxisSimulator2D(TjX, TjY, TmX, TmY, 100, AxisType="CoreXY")
         i = i + 1
