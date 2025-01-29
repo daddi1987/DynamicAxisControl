@@ -356,8 +356,26 @@ class ProfileGenerator:  # int
             M1_Block = True
             M2_Block = True
 
-        return round(Rev_MaxSpeedXAxis, 2), round(Rev_AccAxisX, 2), round(Rev_MaxSpeedYAxis, 3), round(Rev_AccAxisY,3), PositionXAxis, PositionYAxis, TimeX, TimeY, int(M1_revToSend), int(M2_revToSend), M1_Block, M2_Block, M1_AccTime, M2_AccTime, SpeedAlghorytmics,TimeAlghorytmics, SpeedTraj, TimeTraj
-                                                                                                       
+        return {
+            "M1_MaxSpeed_Revolution": round(Rev_MaxSpeedXAxis, 4),
+            "M1_Acc_Revolution": round(Rev_AccAxisX, 4),
+            "M2_MaxSpeed_Revolution": round(Rev_MaxSpeedYAxis, 4),
+            "M2_AxisYAcc_Revolution": round(Rev_AccAxisY, 4),
+            "M1_PositionTrajectory": PositionXAxis,
+            "M2_AxisPositionTrajectory": PositionYAxis,
+            "M1_AxisTimeTrajectory": TimeX,
+            "M2_AxisTimeTrajectory": TimeY,
+            "M1_PosValueToSand" : M1_revToSend,
+            "M2_PosValueToSand": M2_revToSend,
+            "M1_BlockMotor": M1_Block,
+            "M2_BlockMotor": M2_Block,
+            "M1_AccelerationTime": M1_AccTime,
+            "M2_AccelerationTime": M2_AccTime,
+            "SpeedAlghorytmics": SpeedAlghorytmics,
+            "TimeAlghorytmics" : TimeAlghorytmics,
+            "SpeedTrajectoryProfile" : SpeedTraj,
+            "TimeTrajectoryProfile" : TimeTraj
+        }
 
     def SyncLinearAxes(self, Xstart, Ystart, X, Y, Graph=True):
 
