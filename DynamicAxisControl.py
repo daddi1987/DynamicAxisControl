@@ -258,7 +258,7 @@ class ProfileGenerator:  # int
                 # axs[0,0].scatter(t, velocity_profile, color='orange', s=10)  # Add samples
                 axs[0, 0].plot(M2_TrajectoryTime, Y_Trajectory, label="Speed Axis M2 (mm/s)", color="orange")
                 # axs[0,0].scatter(M2_TrajectoryTime, Y_Trajectory, color='yellow', s=10)  # Add samples
-                axs[0, 0].set_title("Speed PRofile")
+                axs[0, 0].set_title("Speed Profile")
                 axs[0, 0].set_xlabel("Time (s)")
                 axs[0, 0].set_ylabel("Speed (mm/s)")
                 axs[0, 0].grid(True)
@@ -288,7 +288,7 @@ class ProfileGenerator:  # int
 
                 # axs[1, 0].scatter(position_M1_interpolated, position_M2_interpolated, color='blue', marker='o', label='Punti Campionati')  # Samples
                 axs[1, 0].set_title("M1 and M2 Trajectory Interpolated")
-                axs[1, 0].set_xlabel("Position Axis M1 (mm)")
+                axs[1, 0].set_xlabel("Time (s)")
                 axs[1, 0].set_ylabel("Position Axis M2 (mm)")
                 # axs[1,0].set_xlim(-460, 460)  # max limit axis X
                 # axs[1,0].set_ylim(-600, 600)  # max limit axis Y
@@ -304,14 +304,16 @@ class ProfileGenerator:  # int
                            (f'                                 DYNAMICS USED:    \n\n'
                             f'- STROKE AXIS X (demand): {X} mm\n'
                             f'- STROKE AXIS Y (demand): {Y} mm\n'
-                            f'- STROKE AXIS M1 (Calculated): {StrokeM1} mm\n'
-                            f'- STROKE AXIS M2 (Calculated): {StrokeM2} mm\n'
+                            f'- STROKE AXIS M1 (Calculated): {round(StrokeM1,4)} mm\n'
+                            f'- STROKE AXIS M2 (Calculated): {round(StrokeM2,4)} mm\n'
                             f'- SPEED MAX X AXIS  (demand): {self.M1_MaxSpeed} mm/s\n'
+                            f'- \n'
                             f'- MAX ACCELERATION AXIS X(demand): {self.M1_Acc_Dec} mm/s²\n'
                             f'- SPEED MAX Y AXIS(demand): {self.M2_MaxSpeed} mm/s\n'
                             f'- MAX ACCELERATION AXIS Y(demand): {self.M2_Acc_Dec} mm/s²\n'
-                            f'- TIME TRAJECTORY AXIS M1: {round(M1_TrajectoryTotalTime, 3)} s\n'
-                            f'- TIME TRAJECTORY AXIS M2: {round(M2_TrajectoryTotalTime, 3)} s\n'
+                            f'- \n'
+                            f'- TIME TRAJECTORY AXIS M1 (demand): {round(M1_TrajectoryTotalTime, 3)} s\n'
+                            f'- TIME TRAJECTORY AXIS M2 (demand): {round(M2_TrajectoryTotalTime, 3)} s\n'
                             f'- AXIS RECALCULATED:  {AxisRecalculate}\n'
                             f'- \n'),
                            fontsize=8, color='black')
@@ -329,6 +331,9 @@ class ProfileGenerator:  # int
                             f'- MAX ACCELERATION MOTOR [M2] : {round(AccAxisY, 3)} mm/s²\n'
                             f'- TIME ACCELERATION MOTOR [M1]: {round(M1_AccTime, 3)} s\n'
                             f'- TIME ACCELERATION MOTOR [M2]: {round(M2_AccTime, 3)} s\n'
+                            f'- \n'
+                            f'- TIME TRAJECTORY AXIS M1 (Calculated): {round(max(TimeX),4)} s\n'
+                            f'- TIME TRAJECTORY AXIS M2 (Calculated): {round(max(TimeY),4)} s\n'
                             f'- \n'
                             f'- SPEED MAX MOTOR [M1] : {round(Rev_MaxSpeedXAxis, 2)} (rev/s)\n'
                             f'- MAX ACCELERATION MOTOR [M1]: {round(Rev_AccAxisX, 2)} (rev/s²)\n'
@@ -355,7 +360,7 @@ class ProfileGenerator:  # int
             M2_revToSend = 0
             M1_Block = True
             M2_Block = True
-
+        
         return {
             "M1_MaxSpeed_Revolution": round(Rev_MaxSpeedXAxis, 4),
             "M1_Acc_Revolution": round(Rev_AccAxisX, 4),
@@ -538,7 +543,7 @@ class ProfileGenerator:  # int
 
             # axs[1, 0].scatter(position_M1_interpolated, position_M2_interpolated, color='blue', marker='o', label='Punti Campionati')  # samples
             axs[1, 0].set_title("Interpolation Trajectory X-Y")
-            axs[1, 0].set_xlabel("Axis Position X (mm)")
+            axs[1, 0].set_xlabel("Time (s)")
             axs[1, 0].set_ylabel("Axis Position Y (mm)")
             # axs[1,0].set_xlim(-460, 460)  # End Stroke Axis X
             # axs[1,0].set_ylim(-600, 600)  # End Stroke Axis Y
@@ -557,6 +562,7 @@ class ProfileGenerator:  # int
                         f'- MAX ACCELERATION AXIS X (demand): {self.M1_Acc_Dec} mm/s²\n'
                         f'- SPEED MAX AXIS Y(demand): {self.M2_MaxSpeed} mm/s\n'
                         f'- MAX ACCELERATION AXIS Y(demand): {self.M2_Acc_Dec} mm/s²\n'
+                        f'- \n'
                         f'- TIME TRAJECTORY AXIS X: {round(M1_TrajectoryTotalTime, 3)} s\n'
                         f'- TIME TRAJECTORY AXIS Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
                         f'- AXIS RECALCULATED:  {AxisRecalculate}\n'
@@ -577,6 +583,9 @@ class ProfileGenerator:  # int
                         f'- MAX ACCELERATION AXIS Y : {round(AccAxisY, 3)} mm/s²\n'
                         f'- TIME ACCELERATION AXIS X: {round(M1_AccTime, 3)} s\n'
                         f'- TIME ACCELERATION AXIS Y: {round(M2_AccTime, 3)} s\n'
+                        f'- \n'
+                        f'- TIME TRAJECTORY AXIS M1 (Calculated): {round(max(TimeX),4)} s\n'
+                        f'- TIME TRAJECTORY AXIS M2 (Calculated): {round(max(TimeY),4)} s\n'
                         f'- \n'
                         f'- SPEED MAX AXIS X : {round(Rev_MaxSpeedXAxis, 2)} (rev/s)\n'
                         f'- MAX ACCELERATION AXIS X: {round(Rev_AccAxisX, 2)} (rev/s²)\n'
@@ -757,8 +766,8 @@ class ProfileGenerator:  # int
 
             # axs[1, 0].scatter(position_M1_interpolated, position_M2_interpolated, color='blue', marker='o', label='Punti Campionati')  # Grafico a dispersione
             axs[1, 0].set_title("Trajectory Interpolated X-Y")
-            axs[1, 0].set_xlabel("Position Axis X (mm)")
-            axs[1, 0].set_ylabel("Position Axis Y (mm)")
+            axs[1, 0].set_xlabel("Time (s)")
+            axs[1, 0].set_ylabel("Position Axis X-Y (mm)")
             # axs[1,0].set_xlim(-460, 460)  # Limite massimo dell'asse X
             # axs[1,0].set_ylim(-600, 600)  # Limite massimo dell'asse Y
 
@@ -779,7 +788,6 @@ class ProfileGenerator:  # int
                         f'- TIME TRAJECTORY AXIS Y: {round(M2_TrajectoryTotalTime, 3)} s\n'
                         f'- STROKE AXIS X: {X} mm\n'
                         f'- STROKE AXIS Y: {Y} mm\n'
-                        f'- AXIS RICALCULATED:  {AxisRecalculate}\n'
                         f'- \n'),
                        fontsize=8, color='black')
 
@@ -796,6 +804,9 @@ class ProfileGenerator:  # int
                         f'- MAX ACCELERATION AXIS Y: {round(AccAxisY, 3)} mm/s²\n'
                         f'- ACCELERATION TIME AXIS X: {round(M1_AccTime, 3)} s\n'
                         f'- ACCELERATION TIME AXIS Y: {round(M2_AccTime, 3)} s\n'
+                        f'- \n'
+                        f'- TIME TRAJECTORY AXIS M1 (Calculated): {round(max(TimeX),4)} s\n'
+                        f'- TIME TRAJECTORY AXIS M2 (Calculated): {round(max(TimeY),4)} s\n'
                         f'- \n'),
                        fontsize=8, color='black')
 
@@ -1110,15 +1121,16 @@ if __name__ == "__main__":
     # Example Paramiters
     generator = ProfileGenerator(2.0, 0.5, 2.0, 0.5, 38, 1000)
 
-    XSim = [0, 200 , 100, 250, 10, 300, 250]
-    YSim = [0, 200 , 100, 526, 10, 30, 350]
+    XSim = [0, 2352.325 , 100, 250, 10, 300, 250]
+    YSim = [0, 1.6548 , 100, 526, 10, 30, 350]
 
     i = 1
     while i != 7:
 
+        
         #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY, M1_position, M2_position, M1Block, M2Block = generator.SyncCoreXYAxis(XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
             
-        #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
+        VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
         
         #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.LinearMotion(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
         if M1Block == False or M2Block == False:
