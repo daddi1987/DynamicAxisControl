@@ -57,7 +57,7 @@ class ProfileGenerator:  # int
         self.StrokeThreshold = StrokeThreshold
         self.FactorGroup = FactorGroup
 
-    def SyncCoreXYAxis(self, Xstart, Ystart, X, Y, Graph=True):
+    def SyncCoreXYAxis(self, Xstart, Ystart, X, Y,incrsave, Graph=True):
         """
         The function synchronizes the speed of two motors to move a Core XY type Cartesian axis.
         The algorithm synchronizes the trajectories of two motors to determine their acceleration and deceleration times. The trajectories will so be executed diagonally.
@@ -340,6 +340,8 @@ class ProfileGenerator:  # int
                 cursor = Cursor(axs[1, 0], useblit=True, color='red', linewidth=1)
                 axs[1, 0].legend()
                 plt.grid(True)
+                #plt.savefig(r'C:\Users\david\Documents\GitHub\Dynamic-Axis-Control\Test\Image/' + str(incrsave), dpi = 300)
+                #plt.clf()
                 plt.show()
         else:
             print("Axes In Target Not Moveing")
@@ -377,7 +379,7 @@ class ProfileGenerator:  # int
             "TimeTrajectoryProfile" : TimeTraj
         }
 
-    def SyncLinearAxes(self, Xstart, Ystart, X, Y, Graph=True):
+    def SyncLinearAxes(self, Xstart, Ystart, X, Y, Graph=True,):
 
         # -----------------------------------Calculated displacement value and convert in absolute value
         X = X - Xstart

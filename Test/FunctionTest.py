@@ -21,7 +21,7 @@ while True:
 
     generator = ProfileGenerator(2.0, 0.5, 2.0, 0.5, 38, 1000, 0.25)
 
-    VelX, AccX, VelY, AccY, _, _, TmX, TmY, M1_position, M2_position, _, _,M1_AccTime, M2_AccTime, TJM1, TM1, TJM2, TM2 = generator.SyncCoreXYAxis(0,0,RandomX,RandomY,Graph=False)
+    generatorValue = generator.SyncCoreXYAxis(0,0,RandomX,RandomY, i,Graph=False)
 
     #VelX, AccX, VelY, AccY, M1_position, M2_position, TmX, TmY, M1_AccTime, M2_AccTime,_,_,_,_ = generator.SyncLinearAxes(0,0,RandomX,RandomY,Graph=False)
 
@@ -30,22 +30,23 @@ while True:
     Y_DemandPosition = RandomY  # Target Y Axis
 
     # Demand Target Position
-    M1_DemandPosition = M1_position  # target M1 Motor Position
-    M2_DemandPosition = M2_position  # target M2 Motor Position
+    M1_DemandPosition = generatorValue['M1_PosValueToSand']  # target M1 Motor Position
+    M2_DemandPosition = generatorValue['M2_PosValueToSand']  # target M2 Motor Position
 
     #Recalculated
     # Demand Speed Profile
 
-    M1_Speed = VelX  # M1 Max Speed
-    M1_Acc_Dec = AccX # M1 Acceleration/deceleration 
+    M1_Speed = generatorValue['M1_MaxSpeed_Revolution']  # M1 Max Speed
+    M1_Acc_Dec = generatorValue['M1_Acc_Revolution'] # M1 Acceleration/deceleration 
     
-    M2_Speed = VelY #M2 Max Speed
-    M2_Acc_Dec = AccY # M2 Acceleration/deceleration 
+    M2_Speed = generatorValue['M2_MaxSpeed_Revolution'] #M2 Max Speed
+    M2_Acc_Dec = generatorValue['M2_AxisYAcc_Revolution'] # M2 Acceleration/deceleration 
     
-    M1_Time_Trajectory = round(max(TmX),10)   #M1 Time Trajectory
-    M2_Time_Trajectory = round(max(TmY), 10)  #M2 Time Trajectory
-    M1_AccT = round(M1_AccTime,6) # M1 Acceleration Time
-    M2_AccT = round(M2_AccTime,6) # M2 Acceleration Time
+    M1_Time_Trajectory = round(max(generatorValue['M1_AxisTimeTrajectory']),10)   #M1 Time Trajectory
+    M2_Time_Trajectory = round(max(generatorValue['M2_AxisTimeTrajectory']), 10)  #M2 Time Trajectory
+    M2_Time_Trajectory = round(max(generatorValue['M2_AxisTimeTrajectory']), 10)  #M2 Time Trajectory
+    M1_AccT = round(generatorValue['M1_AccelerationTime'],6) # M1 Acceleration Time
+    M2_AccT = round(generatorValue['M2_AccelerationTime'],6) # M2 Acceleration Time
 
     print("CHECK TRAJECTORY.................")
     print(X_DemandPosition)
