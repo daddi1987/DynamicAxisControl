@@ -1,0 +1,11 @@
+LICENSE
+README.md
+setup.py
+DynamicAxisControl/DynamicAxisControl.py
+DynamicAxisControl/__init__.py
+DynamicAxisControl.egg-info/PKG-INFO
+DynamicAxisControl.egg-info/SOURCES.txt
+DynamicAxisControl.egg-info/dependency_links.txt
+DynamicAxisControl.egg-info/entry_points.txt
+DynamicAxisControl.egg-info/requires.txt
+DynamicAxisControl.egg-info/top_level.txt

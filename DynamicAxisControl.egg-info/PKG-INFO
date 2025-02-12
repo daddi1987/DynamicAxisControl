@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: DynamicAxisControl
+Version: 0.1.0
+Summary: Linear trajectory generator for robotic axes, with the ability to synchronize up to two speed profiles, to maximize performance. Also perfect for calculating the trajectories of the CoreXY Axes.
+Home-page: https://github.com/daddi1987/DynamicAxisControl
+Author: Davide Zuanon
+Author-email: d.zuanon87@gmail.com
+License: unlicense
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: The Unlicense (Unlicense)
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.10
+License-File: LICENSE
