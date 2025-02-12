@@ -1133,6 +1133,7 @@ if __name__ == "__main__":
         VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.SyncLinearAxes( XSim[i - 1], YSim[i - 1], XSim[i], YSim[i], Graph=True)
         
         #VelX, AccX, VelY, AccY, TjX, TjY, TmX, TmY = generator.LinearMotion(XSim[i-1],YSim[i-1], XSim[i], YSim[i], Graph=True)
+        '''
         if M1Block == False or M2Block == False:
             generator.AxisSimulator2D(TjX, TjY, TmX, TmY, 100, AxisType="CoreXY")
         i = i + 1
@@ -1142,5 +1143,5 @@ if __name__ == "__main__":
         print("Acc/Dec X Axis: ", AccX)
         print("Speed Y Axis: ", VelY)
         print("Acc/Dec Y Axis: ", AccY)
-
+        '''
 
