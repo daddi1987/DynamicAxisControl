@@ -1,11 +1,16 @@
 from setuptools import setup
 
+# read the contents of your README file
+from pathlib import Path
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='DynamicAxisControl',
-    version='0.1.0',    
-    description='Linear trajectory generator for robotic axes, with the ability to synchronize up to two speed profiles, to maximize performance. Also perfect for calculating the trajectories of the CoreXY Axes.',
-    url='https://github.com/daddi1987/DynamicAxisControl',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    version='1.0.0',    
+    description='Linear trajectory generator for robotic axes, with the ability to synchronize up to two speed profiles',
     author='Davide Zuanon',
     author_email='d.zuanon87@gmail.com',
     license='unlicense',
@@ -15,6 +20,7 @@ setup(
                       'scipy',
                       'time',                     
                       ],
+
 
     classifiers=[
         'Development Status :: 4 - Beta',
