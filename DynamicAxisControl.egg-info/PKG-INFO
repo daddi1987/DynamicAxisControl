@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: DynamicAxisControl
-Version: 1.0.0
+Version: 1.0.1
 Summary: Linear trajectory generator for robotic axes, with the ability to synchronize up to two speed profiles
 Author: Davide Zuanon
 Author-email: d.zuanon87@gmail.com

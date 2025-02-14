@@ -9,7 +9,7 @@ setup(
     name='DynamicAxisControl',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version='1.0.0',    
+    version='1.0.1',    
     description='Linear trajectory generator for robotic axes, with the ability to synchronize up to two speed profiles',
     author='Davide Zuanon',
     author_email='d.zuanon87@gmail.com',
@@ -17,8 +17,7 @@ setup(
     packages=['DynamicAxisControl'],
     install_requires=['matplotlib',
                       'numpy',
-                      'scipy',
-                      'time',                     
+                      'scipy',                    
                       ],
 
 
